@@ -78,19 +78,6 @@ body {
   font-weight: 700;
 }
 
-.hero-chip {
-  margin: 0;
-  border: 1px solid color-mix(in oklch, var(--accent) 35%, white 65%);
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent-strong);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 0.3rem 0.65rem;
-}
-
 .theme-toggle {
   border: 1px solid color-mix(in oklch, var(--line-strong) 72%, white 28%);
   border-radius: 999px;
@@ -174,10 +161,7 @@ body {
 
 .primary-tabs {
   margin-top: 0.28rem;
-}
-
-.report-tabs {
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.95rem;
 }
 
 .tab-btn {
@@ -208,47 +192,6 @@ body {
 .nav-tab.active {
   border-bottom-color: var(--accent-strong);
   color: var(--accent-strong);
-}
-
-.report-tab {
-  border: 1px solid color-mix(in oklch, var(--line-strong) 75%, white 25%);
-  border-radius: 999px;
-  background: oklch(1 0 0 / 0.66);
-  color: color-mix(in oklch, var(--ink) 72%, var(--muted) 28%);
-  padding: 0.33rem 0.64rem;
-  font-size: 0.78rem;
-  font-weight: 600;
-}
-
-.report-tab.active {
-  border-color: color-mix(in oklch, var(--accent) 55%, var(--line-strong) 45%);
-  background: color-mix(in oklch, var(--accent-soft) 35%, white 65%);
-  color: color-mix(in oklch, var(--ink) 76%, var(--accent-strong) 24%);
-}
-
-.icon-tab {
-  width: 2.4rem;
-  height: 2.4rem;
-  border-radius: 50%;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon-tab img {
-  width: 1.2rem;
-  height: 1.2rem;
-  display: block;
-  transition: transform 0.2s ease, filter 0.2s ease;
-}
-
-.icon-tab:hover img {
-  transform: rotate(8deg);
-}
-
-.icon-tab.active img {
-  filter: brightness(0) invert(1);
 }
 
 .tab-panel {
@@ -359,6 +302,19 @@ button:disabled {
   filter: saturate(0.7);
 }
 
+.report-toolbar .ghost:disabled,
+.report-toolbar .secondary:disabled {
+  cursor: default;
+}
+
+button:focus-visible,
+.tab-btn:focus-visible,
+.utility-btn:focus-visible,
+.theme-toggle:focus-visible {
+  outline: 2px solid color-mix(in oklch, var(--accent) 55%, white 45%);
+  outline-offset: 2px;
+}
+
 button.primary {
   color: oklch(0.98 0.005 160);
   background: linear-gradient(155deg, var(--accent), color-mix(in oklch, var(--accent-strong) 68%, var(--accent) 32%));
@@ -397,6 +353,24 @@ button.ghost:hover:not(:disabled) {
   color: color-mix(in oklch, var(--ink) 80%, var(--muted) 20%);
   padding: 0.58rem 0.72rem;
   font-size: 0.79rem;
+}
+
+.reports-list {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.reports-empty {
+  text-align: left;
+}
+
+.reports-empty h2 {
+  margin: 0 0 0.3rem;
+}
+
+.reports-empty p {
+  margin: 0;
+  color: var(--muted);
 }
 
 .report-toolbar {
@@ -714,18 +688,6 @@ body[data-theme="dark"] .nav-tab.active {
   border-bottom-color: oklch(0.88 0.05 168);
 }
 
-body[data-theme="dark"] .report-tab {
-  background: oklch(0.24 0.02 162 / 0.82);
-  color: oklch(0.86 0.012 160);
-  border-color: oklch(0.43 0.03 162 / 0.9);
-}
-
-body[data-theme="dark"] .report-tab.active {
-  background: oklch(0.32 0.05 168 / 0.9);
-  color: oklch(0.96 0.01 160);
-  border-color: oklch(0.65 0.08 168 / 0.95);
-}
-
 body[data-theme="dark"] .card {
   background:
     linear-gradient(160deg, oklch(0.23 0.018 162), oklch(0.2 0.014 155)),
@@ -773,6 +735,10 @@ body[data-theme="dark"] .settings-note {
   border-color: oklch(0.45 0.03 162 / 0.9);
   background: oklch(0.25 0.018 162 / 0.92);
   color: oklch(0.86 0.012 160);
+}
+
+body[data-theme="dark"] .reports-empty p {
+  color: oklch(0.74 0.02 160);
 }
 
 body[data-theme="dark"] .markdown-render a {

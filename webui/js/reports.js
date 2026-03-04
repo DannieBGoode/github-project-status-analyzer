@@ -28,27 +28,12 @@ export function addReportTab(filename, markdown) {
   const id = `report-${state.reportCounter}`;
   state.reports.push({ id, filename, markdown });
 
-  const tabs = byId("tabs");
-  const tabBtn = document.createElement("button");
-  tabBtn.className = "tab-btn report-tab";
-  tabBtn.dataset.tab = id;
-  tabBtn.textContent = `Report ${state.reportCounter}`;
-  tabBtn.addEventListener("click", () => selectTab(id));
-  const spacer = tabs.querySelector(".tabs-spacer");
-  if (spacer) {
-    tabs.insertBefore(tabBtn, spacer);
-  } else {
-    tabs.appendChild(tabBtn);
-  }
-
-  const panel = document.createElement("section");
-  panel.id = `tab-${id}`;
-  panel.className = "tab-panel";
-  panel.innerHTML = `
-    <div class="card">
+  const item = document.createElement("article");
+  item.className = "card report-card";
+  item.innerHTML = `
       <div class="report-toolbar">
         <div>
-          <strong>${escapeHtml(filename)}</strong>
+          <strong>Report ${state.reportCounter}: ${escapeHtml(filename)}</strong>
           <div class="report-meta">Generated and rendered in-app</div>
         </div>
         <div class="actions">
@@ -57,13 +42,14 @@ export function addReportTab(filename, markdown) {
         </div>
       </div>
       <div class="markdown-render" data-render="${id}"></div>
-    </div>
   `;
-  byId("reports-container").appendChild(panel);
-  panel.querySelector(`[data-render="${id}"]`).innerHTML = renderMarkdown(markdown);
+  byId("reports-list").appendChild(item);
+  byId("reports-empty").classList.add("hidden");
 
-  panel.querySelector(`[data-copy="${id}"]`).addEventListener("click", async () => {
-    const btn = panel.querySelector(`[data-copy="${id}"]`);
+  item.querySelector(`[data-render="${id}"]`).innerHTML = renderMarkdown(markdown);
+
+  item.querySelector(`[data-copy="${id}"]`).addEventListener("click", async () => {
+    const btn = item.querySelector(`[data-copy="${id}"]`);
     const original = btn.textContent;
     try {
       await navigator.clipboard.writeText(markdown);
@@ -82,9 +68,9 @@ export function addReportTab(filename, markdown) {
       }, 1800);
     }
   });
-  panel.querySelector(`[data-download="${id}"]`).addEventListener("click", () => {
+  item.querySelector(`[data-download="${id}"]`).addEventListener("click", () => {
     downloadMarkdown(filename, markdown);
   });
 
-  selectTab(id);
+  selectTab("reports");
 }

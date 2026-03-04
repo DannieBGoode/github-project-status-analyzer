@@ -36,7 +36,7 @@ function applyTheme(theme) {
   const label = byId("theme-label");
   if (!toggle) return;
   const nextLabel = safeTheme === "dark" ? "Light mode" : "Dark mode";
-  if (icon) icon.textContent = safeTheme === "dark" ? "☀" : "☾";
+  if (icon) icon.textContent = safeTheme === "dark" ? "\u2600" : "\u263E";
   if (label) label.textContent = safeTheme === "dark" ? "Light" : "Dark";
   toggle.setAttribute("aria-label", `Switch to ${nextLabel.toLowerCase()}`);
   toggle.setAttribute("title", `Switch to ${nextLabel.toLowerCase()}`);
@@ -166,11 +166,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     selectTab("settings");
   });
   byId("primary-tabs").addEventListener("click", (e) => {
-    const btn = e.target.closest(".tab-btn");
-    if (!btn) return;
-    selectTab(btn.dataset.tab);
-  });
-  byId("tabs").addEventListener("click", (e) => {
     const btn = e.target.closest(".tab-btn");
     if (!btn) return;
     selectTab(btn.dataset.tab);

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Project Status Report UI</title>
-    <link rel="stylesheet" href="/styles.css?v=20260304-13" />
+    <link rel="stylesheet" href="/styles.css?v=20260304-14" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.svg" />
   </head>
@@ -26,7 +26,7 @@
               <span>Settings</span>
             </button>
             <button id="theme-toggle" type="button" class="theme-toggle" aria-live="polite">
-              <span id="theme-icon" class="theme-icon" aria-hidden="true">◐</span>
+              <span id="theme-icon" class="theme-icon" aria-hidden="true">&#9790;</span>
               <span id="theme-label">Theme</span>
             </button>
           </div>
@@ -41,9 +41,7 @@
 
       <nav id="primary-tabs" class="tabs primary-tabs">
         <button class="tab-btn nav-tab active" data-tab="generator">Generator</button>
-        <span class="tabs-spacer"></span>
-      </nav>
-      <nav id="tabs" class="tabs report-tabs">
+        <button class="tab-btn nav-tab" data-tab="reports">Reports</button>
         <span class="tabs-spacer"></span>
       </nav>
 
@@ -106,6 +104,17 @@
         </div>
       </section>
 
+      <section id="tab-reports" class="tab-panel">
+        <div id="reports-empty" class="card reports-empty">
+          <h2>No Reports Yet</h2>
+          <p>
+            Run your first report from the Generator tab. Generated reports will appear here
+            automatically.
+          </p>
+        </div>
+        <section id="reports-list" class="reports-list"></section>
+      </section>
+
       <section id="tab-settings" class="tab-panel">
         <div class="card">
           <h2>API Credentials</h2>
@@ -134,8 +143,6 @@
           </p>
         </div>
       </section>
-
-      <section id="reports-container"></section>
     </main>
 
     <div
@@ -163,6 +170,6 @@
       </div>
     </div>
 
-    <script type="module" src="/js/main.js?v=20260304-4"></script>
+    <script type="module" src="/js/main.js?v=20260304-5"></script>
   </body>
 </html>
