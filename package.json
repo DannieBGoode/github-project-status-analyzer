@@ -1,0 +1,9 @@
+{
+  "name": "github-project-status-analyzer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:js": "node --test tests/js/*.test.js",
+    "test": "npm run test:js"
+  }
+}

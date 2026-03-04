@@ -108,6 +108,30 @@ python src/gitHubAISummary.py
 After each run, the report is saved as:
 - `reports/report-YYYYMMDD-HHMMSS.md`
 
+## Automated Tests
+
+The repository now includes:
+- Python unit tests under `tests/python`
+- JavaScript unit tests under `tests/js` (Node test runner)
+
+Run both suites with:
+
+```bash
+python run_tests.py
+```
+
+Run only Python tests:
+
+```bash
+python -m unittest discover -s tests/python -p "test_*.py"
+```
+
+Run only JavaScript tests:
+
+```bash
+node --test tests/js/*.test.js
+```
+
 ## Web UI (Local)
 
 Run a minimal local web UI with prefilled values from `config.py` (API keys shown masked):

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Project Status Report UI</title>
-    <link rel="stylesheet" href="/styles.css?v=20260304-14" />
+    <link rel="stylesheet" href="/styles.css?v=20260304-17" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.svg" />
   </head>
@@ -20,6 +20,7 @@
               class="utility-btn"
               data-tab="settings"
               aria-label="Open settings"
+              aria-pressed="false"
               title="Open settings"
             >
               <img src="/icons/tools.svg" alt="" aria-hidden="true" />
@@ -39,13 +40,33 @@
         <p id="app-error" class="app-error hidden" role="alert"></p>
       </header>
 
-      <nav id="primary-tabs" class="tabs primary-tabs">
-        <button class="tab-btn nav-tab active" data-tab="generator">Generator</button>
-        <button class="tab-btn nav-tab" data-tab="reports">Reports</button>
+      <nav id="primary-tabs" class="tabs primary-tabs" role="tablist" aria-label="Primary navigation">
+        <button
+          id="tab-trigger-generator"
+          type="button"
+          class="tab-btn nav-tab active"
+          data-tab="generator"
+          role="tab"
+          aria-selected="true"
+          aria-controls="tab-generator"
+        >
+          Generator
+        </button>
+        <button
+          id="tab-trigger-reports"
+          type="button"
+          class="tab-btn nav-tab"
+          data-tab="reports"
+          role="tab"
+          aria-selected="false"
+          aria-controls="tab-reports"
+        >
+          Reports
+        </button>
         <span class="tabs-spacer"></span>
       </nav>
 
-      <section id="tab-generator" class="tab-panel active">
+      <section id="tab-generator" class="tab-panel active" role="tabpanel" aria-labelledby="tab-trigger-generator">
         <div class="card">
           <form id="report-form">
             <section class="form-block">
@@ -104,7 +125,19 @@
         </div>
       </section>
 
-      <section id="tab-reports" class="tab-panel">
+      <section
+        id="tab-reports"
+        class="tab-panel"
+        role="tabpanel"
+        aria-labelledby="tab-trigger-reports"
+        aria-hidden="true"
+      >
+        <div id="reports-controls" class="card reports-controls hidden">
+          <label for="report-picker">
+            <span>Select Report</span>
+            <select id="report-picker" aria-label="Select report to view"></select>
+          </label>
+        </div>
         <div id="reports-empty" class="card reports-empty">
           <h2>No Reports Yet</h2>
           <p>
@@ -115,7 +148,7 @@
         <section id="reports-list" class="reports-list"></section>
       </section>
 
-      <section id="tab-settings" class="tab-panel">
+      <section id="tab-settings" class="tab-panel" aria-hidden="true">
         <div class="card">
           <h2>API Credentials</h2>
           <p class="block-note">
@@ -170,6 +203,6 @@
       </div>
     </div>
 
-    <script type="module" src="/js/main.js?v=20260304-5"></script>
+    <script type="module" src="/js/main.js?v=20260304-6"></script>
   </body>
 </html>
