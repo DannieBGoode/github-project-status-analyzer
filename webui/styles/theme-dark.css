@@ -76,13 +76,17 @@ body[data-theme="dark"] .report-card::before {
 }
 
 body[data-theme="dark"] .report-title-meta,
+body[data-theme="dark"] .report-file,
 body[data-theme="dark"] .report-project-line {
   color: oklch(0.81 0.018 160);
 }
 
-body[data-theme="dark"] .meta-sep,
-body[data-theme="dark"] .stats-icon {
+body[data-theme="dark"] .meta-sep {
   color: oklch(0.72 0.018 160);
+}
+
+body[data-theme="dark"] .stats-icon {
+  color: oklch(0.74 0.018 160);
 }
 
 body[data-theme="dark"] .report-inline-stats,
@@ -113,10 +117,23 @@ body[data-theme="dark"] .stats-updated {
   color: oklch(0.86 0.09 152);
 }
 
+body[data-theme="dark"] .report-download-btn {
+  background: linear-gradient(
+    155deg,
+    color-mix(in oklch, var(--accent) 80%, oklch(0.18 0.02 160) 20%),
+    color-mix(in oklch, var(--accent-strong) 62%, var(--accent) 38%)
+  ) !important;
+}
+
 body[data-theme="dark"] .markdown-copy-btn {
   background: oklch(0.24 0.016 160 / 0.94);
   color: oklch(0.82 0.015 160);
   border-color: oklch(0.45 0.03 162 / 0.9);
+}
+
+body[data-theme="dark"] .markdown-copy-btn:hover {
+  background: oklch(0.28 0.02 164 / 0.95);
+  border-color: oklch(0.55 0.05 166 / 0.9);
 }
 
 body[data-theme="dark"] .markdown-copy-btn.is-copied::after {

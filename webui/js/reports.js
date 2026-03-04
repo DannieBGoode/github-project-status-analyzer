@@ -185,17 +185,29 @@ function renderActiveReport() {
   const newCommentsEntry = metadataMap.get("comments created in lookback window");
   const contextParts = [];
   if (generatedEntry) {
-    contextParts.push(
-      `<span class="meta-part"><span class="meta-icon" aria-hidden="true">&#9684;</span><span>${escapeHtml(
-        generatedEntry.value
-      )}</span></span>`
-    );
+    contextParts.push(`<span>${escapeHtml(generatedEntry.value)}</span>`);
   }
   if (providerEntry) {
-    contextParts.push(
-      `<span class="meta-part"><span class="meta-icon" aria-hidden="true">&#9783;</span><span>${escapeHtml(
-        providerEntry.value
-      )}</span></span>`
+    contextParts.push(`<span>${escapeHtml(providerEntry.value)}</span>`);
+  }
+  const statsParts = [];
+  if (totalItemsEntry) {
+    statsParts.push(
+      `<span class="stats-segment"><span class="stats-icon" aria-hidden="true">&#9783;</span>Fetched <strong>${escapeHtml(
+        totalItemsEntry.value
+      )}</strong></span>`
+    );
+  }
+  if (updatedItemsEntry) {
+    statsParts.push(
+      `<span class="stats-segment stats-updated">Updated <strong>${escapeHtml(updatedItemsEntry.value)}</strong></span>`
+    );
+  }
+  if (newCommentsEntry) {
+    statsParts.push(
+      `<span class="stats-segment"><span class="stats-icon" aria-hidden="true">&#9993;</span>Comments <strong class="stats-comments">${escapeHtml(
+        newCommentsEntry.value
+      )}</strong></span>`
     );
   }
 
@@ -204,7 +216,8 @@ function renderActiveReport() {
       <div class="report-toolbar">
         <div class="report-toolbar-main">
           <div class="report-identity">
-            <strong>Report ${escapeHtml(activeReport.filename)}</strong>
+            <strong>Report</strong>
+            <div class="report-file">${escapeHtml(activeReport.filename)}</div>
             ${
               projectNameEntry
                 ? `<div class="report-project-line">${
@@ -226,22 +239,13 @@ function renderActiveReport() {
           </div>
           <ul class="report-inline-stats" aria-label="Report activity metrics">
             ${
-              totalItemsEntry && updatedItemsEntry
-                ? `<li><span class="stats-icon" aria-hidden="true">&#9783;</span><span class="stats-label">Items Fetched:</span> <span class="stats-total">${escapeHtml(
-                    totalItemsEntry.value
-                  )}</span> / <span class="stats-updated">${escapeHtml(updatedItemsEntry.value)} Updated</span></li>`
-                : ""
-            }
-            ${
-              newCommentsEntry
-                ? `<li><span class="stats-icon" aria-hidden="true">&#9993;</span><span class="stats-label">New Comments:</span> <span class="stats-comments">${escapeHtml(
-                    newCommentsEntry.value
-                  )}</span></li>`
+              statsParts.length
+                ? `<li>${statsParts.join('<span class="meta-sep" aria-hidden="true">•</span>')}</li>`
                 : ""
             }
           </ul>
           <div class="report-actions-inline">
-            <button type="button" class="primary" id="report-download-btn">Download .md</button>
+            <button type="button" class="primary report-download-btn" id="report-download-btn">Download .md</button>
           </div>
         </div>
       </div>

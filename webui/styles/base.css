@@ -500,8 +500,14 @@ button.ghost:active:not(:disabled) {
   letter-spacing: -0.012em;
 }
 
+.report-file {
+  margin-top: 0.08rem;
+  color: color-mix(in oklch, var(--ink) 64%, var(--muted) 36%);
+  font-size: 0.84rem;
+}
+
 .report-project-line {
-  margin-top: 0.2rem;
+  margin-top: 0.14rem;
   font-size: 0.89rem;
   color: color-mix(in oklch, var(--ink) 72%, var(--muted) 28%);
 }
@@ -534,34 +540,23 @@ button.ghost:active:not(:disabled) {
 
 .report-title-meta {
   list-style: none;
-  margin: 0.35rem 0 0;
+  margin: 0.22rem 0 0;
   padding: 0;
   display: grid;
-  gap: 0.18rem;
+  gap: 0;
 }
 
 .report-title-meta li {
   display: inline-flex;
   align-items: center;
-  gap: 0.42rem;
-  color: color-mix(in oklch, var(--ink) 74%, var(--muted) 26%);
-  font-size: 0.86rem;
+  gap: 0.36rem;
+  color: color-mix(in oklch, var(--ink) 70%, var(--muted) 30%);
+  font-size: 0.84rem;
   white-space: nowrap;
-}
-
-.meta-part {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
 }
 
 .meta-sep {
   color: color-mix(in oklch, var(--ink) 52%, var(--muted) 48%);
-}
-
-.meta-icon {
-  color: color-mix(in oklch, var(--ink) 55%, var(--muted) 45%);
-  font-size: 0.93rem;
 }
 
 .report-inline-stats {
@@ -576,33 +571,28 @@ button.ghost:active:not(:disabled) {
 .report-inline-stats li {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.42rem;
   color: color-mix(in oklch, var(--ink) 78%, var(--muted) 22%);
   font-size: 0.88rem;
   white-space: nowrap;
 }
 
 .stats-icon {
-  color: color-mix(in oklch, var(--ink) 58%, var(--muted) 42%);
-  font-size: 0.9rem;
-  margin-right: 0.08rem;
+  color: color-mix(in oklch, var(--ink) 56%, var(--muted) 44%);
+  font-size: 0.86rem;
+  margin-right: 0.2rem;
 }
 
-.stats-label {
-  color: color-mix(in oklch, var(--ink) 58%, var(--muted) 42%);
-}
-
-.stats-total {
-  font-weight: 700;
+.stats-segment strong {
+  font-weight: 800;
 }
 
 .stats-updated {
-  font-weight: 700;
   color: color-mix(in oklch, var(--done) 66%, var(--ink) 34%);
 }
 
 .stats-comments {
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .report-actions-inline {
@@ -616,6 +606,13 @@ button.ghost:active:not(:disabled) {
 
 .report-actions-inline button {
   min-width: 160px;
+}
+
+.report-download-btn {
+  min-height: 2.45rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background: linear-gradient(155deg, color-mix(in oklch, var(--accent) 86%, white 14%), color-mix(in oklch, var(--accent-strong) 58%, var(--accent) 42%)) !important;
 }
 
 .markdown-shell {
@@ -649,6 +646,8 @@ button.ghost:active:not(:disabled) {
 
 .markdown-copy-btn:hover {
   transform: translateY(-1px);
+  background: color-mix(in oklch, var(--accent-soft) 42%, white 58%);
+  border-color: color-mix(in oklch, var(--accent) 44%, var(--line-strong) 56%);
 }
 
 .markdown-copy-btn::after {
@@ -679,6 +678,11 @@ button.ghost:active:not(:disabled) {
 .markdown-copy-btn.is-error {
   color: color-mix(in oklch, var(--failed) 80%, var(--ink) 20%);
   border-color: color-mix(in oklch, var(--failed) 72%, var(--line-strong) 28%);
+}
+
+.markdown-copy-btn:focus-visible {
+  outline: 2px solid color-mix(in oklch, var(--accent) 58%, white 42%);
+  outline-offset: 2px;
 }
 
 .markdown-render {
