@@ -185,10 +185,10 @@ function renderActiveReport() {
   const newCommentsEntry = metadataMap.get("comments created in lookback window");
   const contextParts = [];
   if (generatedEntry) {
-    contextParts.push(`<span>${escapeHtml(generatedEntry.value)}</span>`);
+    contextParts.push(`<span class="meta-part"><span class="meta-icon" aria-hidden="true">&#9684;</span>${escapeHtml(generatedEntry.value)}</span>`);
   }
   if (providerEntry) {
-    contextParts.push(`<span>${escapeHtml(providerEntry.value)}</span>`);
+    contextParts.push(`<span class="meta-part"><span class="meta-icon" aria-hidden="true">&#9783;</span>${escapeHtml(providerEntry.value)}</span>`);
   }
   const statsParts = [];
   if (totalItemsEntry) {
@@ -216,31 +216,28 @@ function renderActiveReport() {
       <div class="report-toolbar">
         <div class="report-toolbar-main">
           <div class="report-identity">
-            <strong>Report</strong>
-            <div class="report-file">${escapeHtml(activeReport.filename)}</div>
             ${
               projectNameEntry
-                ? `<div class="report-project-line">${
+                ? `<strong class="report-title-main">${
                     projectUrlEntry && /^https?:\/\//i.test(projectUrlEntry.value)
-                      ? `<a class="report-meta-project-link" href="${escapeHtml(
+                      ? `<a class="report-title-link report-meta-project-link" href="${escapeHtml(
                           projectUrlEntry.value
                         )}" target="_blank" rel="noopener noreferrer">${escapeHtml(projectNameEntry.value)}</a>`
                       : `<span>${escapeHtml(projectNameEntry.value)}</span>`
-                  }</div>`
+                  }</strong>`
                 : ""
             }
-            ${
-              contextParts.length
-                ? `<ul class="report-title-meta" aria-label="Report generation context">
-                     <li>${contextParts.join('<span class="meta-sep" aria-hidden="true">·</span>')}</li>
-                   </ul>`
-                : ""
-            }
+            <div class="report-file">${escapeHtml(activeReport.filename)}</div>
           </div>
           <ul class="report-inline-stats" aria-label="Report activity metrics">
             ${
+              contextParts.length
+                ? `<li class="stats-context">${contextParts.join('<span class="meta-sep" aria-hidden="true">&middot;</span>')}</li>`
+                : ""
+            }
+            ${
               statsParts.length
-                ? `<li>${statsParts.join('<span class="meta-sep" aria-hidden="true">•</span>')}</li>`
+                ? `<li>${statsParts.join('<span class="meta-sep" aria-hidden="true">&bull;</span>')}</li>`
                 : ""
             }
           </ul>

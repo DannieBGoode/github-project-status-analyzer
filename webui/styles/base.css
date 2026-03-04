@@ -500,16 +500,19 @@ button.ghost:active:not(:disabled) {
   letter-spacing: -0.012em;
 }
 
-.report-file {
-  margin-top: 0.08rem;
-  color: color-mix(in oklch, var(--ink) 64%, var(--muted) 36%);
-  font-size: 0.84rem;
+.report-title-main {
+  margin: 0;
 }
 
-.report-project-line {
-  margin-top: 0.14rem;
-  font-size: 0.89rem;
-  color: color-mix(in oklch, var(--ink) 72%, var(--muted) 28%);
+.report-title-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.report-file {
+  margin-top: 0.18rem;
+  color: color-mix(in oklch, var(--ink) 64%, var(--muted) 36%);
+  font-size: 0.84rem;
 }
 
 .report-meta-project-link {
@@ -538,23 +541,6 @@ button.ghost:active:not(:disabled) {
   transform: translateX(1px);
 }
 
-.report-title-meta {
-  list-style: none;
-  margin: 0.22rem 0 0;
-  padding: 0;
-  display: grid;
-  gap: 0;
-}
-
-.report-title-meta li {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.36rem;
-  color: color-mix(in oklch, var(--ink) 70%, var(--muted) 30%);
-  font-size: 0.84rem;
-  white-space: nowrap;
-}
-
 .meta-sep {
   color: color-mix(in oklch, var(--ink) 52%, var(--muted) 48%);
 }
@@ -575,6 +561,11 @@ button.ghost:active:not(:disabled) {
   color: color-mix(in oklch, var(--ink) 78%, var(--muted) 22%);
   font-size: 0.88rem;
   white-space: nowrap;
+}
+
+.stats-context {
+  color: color-mix(in oklch, var(--ink) 68%, var(--muted) 32%) !important;
+  font-size: 0.83rem !important;
 }
 
 .stats-icon {
@@ -908,7 +899,7 @@ button.ghost:active:not(:disabled) {
     padding-left: 0;
   }
 
-  .report-title-meta li,
+  .stats-context,
   .report-inline-stats li {
     white-space: normal;
   }
