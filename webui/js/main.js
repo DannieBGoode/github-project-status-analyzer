@@ -9,6 +9,47 @@ import {
 } from "./progress.js";
 import { byId } from "./utils.js";
 
+const THEME_STORAGE_KEY = "webui-theme";
+
+function showAppError(message) {
+  const el = byId("app-error");
+  if (!el) return;
+  el.textContent = message;
+  el.classList.remove("hidden");
+}
+
+function getInitialTheme() {
+  try {
+    const saved = localStorage.getItem(THEME_STORAGE_KEY);
+    if (saved === "light" || saved === "dark") return saved;
+  } catch (_err) {
+    // Ignore storage access issues and fall back to system preference.
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function applyTheme(theme) {
+  const safeTheme = theme === "dark" ? "dark" : "light";
+  document.body.setAttribute("data-theme", safeTheme);
+  const toggle = byId("theme-toggle");
+  const icon = byId("theme-icon");
+  const label = byId("theme-label");
+  if (!toggle) return;
+  const nextLabel = safeTheme === "dark" ? "Light mode" : "Dark mode";
+  if (icon) icon.textContent = safeTheme === "dark" ? "☀" : "☾";
+  if (label) label.textContent = safeTheme === "dark" ? "Light" : "Dark";
+  toggle.setAttribute("aria-label", `Switch to ${nextLabel.toLowerCase()}`);
+  toggle.setAttribute("title", `Switch to ${nextLabel.toLowerCase()}`);
+}
+
+function persistTheme(theme) {
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  } catch (_err) {
+    // Ignore storage access issues.
+  }
+}
+
 async function runReport(event) {
   if (!event || event.type !== "click" || !event.isTrusted) return;
   event.preventDefault();
@@ -98,11 +139,36 @@ async function runReport(event) {
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
+  applyTheme(getInitialTheme());
+
   byId("report-form").addEventListener("submit", (e) => e.preventDefault());
   byId("run-btn").addEventListener("click", runReport);
   byId("loading-close").addEventListener("click", () => setLoading(false));
+  byId("theme-toggle").addEventListener("click", () => {
+    const current = document.body.getAttribute("data-theme") === "dark" ? "dark" : "light";
+    const next = current === "dark" ? "light" : "dark";
+    applyTheme(next);
+    persistTheme(next);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    const loading = byId("loading");
+    const closeBtn = byId("loading-close");
+    if (!loading || loading.classList.contains("hidden")) return;
+    if (closeBtn && !closeBtn.classList.contains("hidden")) {
+      setLoading(false);
+    }
+  });
   byId("ai_provider").addEventListener("change", () => {
     updateModelDropdown(byId("ai_provider").value);
+  });
+  byId("settings-btn").addEventListener("click", () => {
+    selectTab("settings");
+  });
+  byId("primary-tabs").addEventListener("click", (e) => {
+    const btn = e.target.closest(".tab-btn");
+    if (!btn) return;
+    selectTab(btn.dataset.tab);
   });
   byId("tabs").addEventListener("click", (e) => {
     const btn = e.target.closest(".tab-btn");
@@ -110,5 +176,9 @@ window.addEventListener("DOMContentLoaded", async () => {
     selectTab(btn.dataset.tab);
   });
 
-  await loadConfig();
+  try {
+    await loadConfig();
+  } catch (_err) {
+    showAppError("Failed to load configuration. Check API availability and refresh.");
+  }
 });

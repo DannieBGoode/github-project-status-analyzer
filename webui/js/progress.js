@@ -3,10 +3,24 @@ import { state } from "./state.js";
 import { byId, formatDuration } from "./utils.js";
 
 export function setLoading(isLoading) {
-  byId("loading").classList.toggle("hidden", !isLoading);
+  const loading = byId("loading");
+  const loadingPanel = byId("loading-panel");
+  loading.classList.toggle("hidden", !isLoading);
+  loading.setAttribute("aria-hidden", String(!isLoading));
   byId("run-btn").disabled = isLoading;
   byId("loading-close").classList.add("hidden");
   byId("loading-close").disabled = !isLoading;
+
+  if (isLoading) {
+    state.lastFocusedElement = document.activeElement;
+    if (loadingPanel) loadingPanel.focus();
+  } else if (
+    state.lastFocusedElement &&
+    typeof state.lastFocusedElement.focus === "function"
+  ) {
+    state.lastFocusedElement.focus();
+    state.lastFocusedElement = null;
+  }
 }
 
 function ensureProgressTimer() {
@@ -94,7 +108,7 @@ export function updateProgress(stepId, status, message, errorText = "") {
   icon.classList.remove("pending", "in_progress", "completed", "failed");
   icon.classList.add(status);
   if (status === "completed") {
-    icon.textContent = "✓";
+    icon.textContent = "\u2713";
   } else if (status === "failed") {
     icon.textContent = "!";
   } else {

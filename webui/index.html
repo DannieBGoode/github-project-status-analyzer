@@ -4,36 +4,57 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Project Status Report UI</title>
-    <link rel="stylesheet" href="/styles.css?v=20260304-11" />
+    <link rel="stylesheet" href="/styles.css?v=20260304-13" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.svg" />
   </head>
   <body>
     <main class="container">
       <header class="hero">
-        <p class="eyebrow">GitHub Project Status Analyzer</p>
+        <div class="hero-top">
+          <p class="eyebrow">GitHub Project Status Analyzer</p>
+          <div class="hero-actions">
+            <button
+              id="settings-btn"
+              type="button"
+              class="utility-btn"
+              data-tab="settings"
+              aria-label="Open settings"
+              title="Open settings"
+            >
+              <img src="/icons/tools.svg" alt="" aria-hidden="true" />
+              <span>Settings</span>
+            </button>
+            <button id="theme-toggle" type="button" class="theme-toggle" aria-live="polite">
+              <span id="theme-icon" class="theme-icon" aria-hidden="true">◐</span>
+              <span id="theme-label">Theme</span>
+            </button>
+          </div>
+        </div>
         <h1>Executive Report Studio</h1>
         <p class="subtitle">
-          Configure, run, and review generated reports without leaving the page.
+          Turn project board activity into leadership-ready updates with clear status narrative,
+          delivery risks, and recommended next actions.
         </p>
+        <p id="app-error" class="app-error hidden" role="alert"></p>
       </header>
 
-      <nav id="tabs" class="tabs">
-        <button class="tab-btn active" data-tab="generator">Generator</button>
+      <nav id="primary-tabs" class="tabs primary-tabs">
+        <button class="tab-btn nav-tab active" data-tab="generator">Generator</button>
         <span class="tabs-spacer"></span>
-        <button class="tab-btn icon-tab" data-tab="settings" title="Tools" aria-label="Tools">
-          <img src="/icons/tools.svg" alt="" aria-hidden="true" />
-        </button>
+      </nav>
+      <nav id="tabs" class="tabs report-tabs">
+        <span class="tabs-spacer"></span>
       </nav>
 
       <section id="tab-generator" class="tab-panel active">
         <div class="card">
           <form id="report-form">
             <section class="form-block">
-              <h2>1. Project</h2>
+              <h2>1. Project Scope</h2>
               <p class="block-note">
-                Query this project board, fetching up to <code>Max Items</code>
-                and up to <code>Max Comments Per Item</code> for each issue/PR.
+                Select the board and retrieval depth. <code>Max Items</code> and
+                <code>Max Comments Per Item</code> directly control context size and runtime.
               </p>
               <div class="grid two">
                 <label>
@@ -59,7 +80,10 @@
             </section>
 
             <section class="form-block">
-              <h2>2. AI Selection</h2>
+              <h2>2. Model Setup</h2>
+              <p class="block-note">
+                Choose provider and model profile used for narrative synthesis.
+              </p>
               <div class="grid two">
                 <label>
                   <span>AI Provider</span>
@@ -84,10 +108,10 @@
 
       <section id="tab-settings" class="tab-panel">
         <div class="card">
-          <h2>API Tokens</h2>
+          <h2>API Credentials</h2>
           <p class="block-note">
             Tokens are required for GitHub data access and AI provider calls.
-            Values are prefilled from your local config and shown masked.
+            Values are loaded from local config and remain masked in the UI.
           </p>
           <div class="grid one">
             <label>
@@ -105,18 +129,31 @@
               <input id="openai_api_key" type="password" autocomplete="off" />
             </label>
           </div>
+          <p class="settings-note">
+            Tip: keep only the providers you actively use configured here.
+          </p>
         </div>
       </section>
 
       <section id="reports-container"></section>
     </main>
 
-    <div id="loading" class="loading hidden">
-      <div class="loading-panel">
+    <div
+      id="loading"
+      class="loading hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+      aria-labelledby="loading-title"
+      aria-describedby="loading-sub"
+    >
+      <div id="loading-panel" class="loading-panel" tabindex="-1">
         <div class="loading-head">
           <div>
-            <p class="loading-title">Generating Report</p>
-            <p class="loading-sub">Tracking progress in real time</p>
+            <p id="loading-title" class="loading-title">Generating Report</p>
+            <p id="loading-sub" class="loading-sub">
+              Tracking pipeline status in real time while the report is assembled.
+            </p>
           </div>
         </div>
         <ul id="progress-list" class="progress-list"></ul>

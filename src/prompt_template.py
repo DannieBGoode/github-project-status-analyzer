@@ -5,10 +5,10 @@ from datetime import datetime, timedelta, timezone
 REPORT_PROMPT_TEMPLATE = """
 Context: You are a CTO reporting agent.
 
-Current Date: {current_date}
-Lookback Window: Last {lookback_days} days (since {cutoff_date})
-Project Name: {project_title}
-Project URL: {project_url}
+- Current Date: {current_date}
+- Lookback Window: Last {lookback_days} days (since {cutoff_date})
+- Project Name: {project_title}
+- Project URL: {project_url}
 - Total Items Fetched: `{values_total_items_fetched}`
 - Items Updated in Lookback Window: `{values_items_updated_in_lookback_window}`
 - Comments Created in Lookback Window: `{values_comments_created_in_lookback_window}`
@@ -26,7 +26,7 @@ Mandatory output rules:
   1. Key Achievements in the last {lookback_days} days
   2. Risks
   3. Issues and Blockers
-- Anything inside the h2 sections that requires a structure should follow the h3, h4, h5 headings structure or use bullet points for lists.
+- Anything inside the h2 sections that requires a structure should follow the h3, h4, h5 headings structure or use bullet points for lists, identation or other markdown elements...
 - Do NOT include sections named `Utilization & Throughput` or `Data Scope Notes`.
 - Apply these definitions strictly:
   - `Risks`: external or uncertain factors not directly controlled by the team that may cause future delay.

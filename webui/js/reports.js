@@ -3,7 +3,7 @@ import { state } from "./state.js";
 import { byId, escapeHtml } from "./utils.js";
 
 export function selectTab(tabId) {
-  document.querySelectorAll(".tab-btn").forEach((el) => {
+  document.querySelectorAll("[data-tab]").forEach((el) => {
     el.classList.toggle("active", el.dataset.tab === tabId);
   });
   document.querySelectorAll(".tab-panel").forEach((el) => {
@@ -30,7 +30,7 @@ export function addReportTab(filename, markdown) {
 
   const tabs = byId("tabs");
   const tabBtn = document.createElement("button");
-  tabBtn.className = "tab-btn";
+  tabBtn.className = "tab-btn report-tab";
   tabBtn.dataset.tab = id;
   tabBtn.textContent = `Report ${state.reportCounter}`;
   tabBtn.addEventListener("click", () => selectTab(id));
@@ -52,8 +52,8 @@ export function addReportTab(filename, markdown) {
           <div class="report-meta">Generated and rendered in-app</div>
         </div>
         <div class="actions">
-          <button type="button" class="secondary" data-copy="${id}">Copy</button>
-          <button type="button" class="primary" data-download="${id}">Download .md</button>
+          <button type="button" class="ghost" data-copy="${id}">Copy</button>
+          <button type="button" class="secondary" data-download="${id}">Download .md</button>
         </div>
       </div>
       <div class="markdown-render" data-render="${id}"></div>

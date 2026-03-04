@@ -4,4 +4,5 @@ export const state = {
   reports: [],
   progress: {},
   timerInterval: null,
+  lastFocusedElement: null,
 };
