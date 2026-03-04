@@ -4,6 +4,16 @@
 - Run from repo root using: `python src/gitHubAISummary.py`
 - Requires a root-level `config.py` matching `config.example.py`.
 
+## Modules
+
+- `settings.py`: loads and normalizes runtime settings from `config.py`.
+- `github_api.py`: GitHub GraphQL calls and project URL -> project ID resolution.
+- `payload_builder.py`: transforms raw GitHub data into analysis payload + metrics.
+- `prompt_template.py`: report prompt template and prompt rendering.
+- `ai_clients.py`: Gemini/OpenAI API calls and provider dispatch.
+- `report_formatting.py`: post-processing (issue links, headings, top metrics block).
+- `report_writer.py`: timestamped markdown report file output.
+
 ## Current Flow
 
 1. Resolve project target:
