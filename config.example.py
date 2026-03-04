@@ -22,6 +22,11 @@ PROJECT_ID = ""
 # Select summary provider: "gemini" or "openai"
 AI_PROVIDER = "gemini"
 
+# Reporting query controls
+LOOKBACK_DAYS = 14
+MAX_ITEMS = 40
+MAX_COMMENTS_PER_ITEM = 20
+
 # Gemini settings
 # Create API key at: https://aistudio.google.com/apikey
 GEMINI_API_KEY = "AIzaSy_your_gemini_api_key_here"

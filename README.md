@@ -17,6 +17,7 @@ The script in `src/gitHubAISummary.py` automates a simple reporting workflow:
    - Risks
    - Issues/blockers
    - Utilization/throughput
+6. Saves the report as a timestamped Markdown file in `reports/`.
 
 Current implementation is a prototype with TODOs for:
 - validating AI output structure,
@@ -104,12 +105,29 @@ From the repository root:
 python src/gitHubAISummary.py
 ```
 
+After each run, the report is saved as:
+- `reports/report-YYYYMMDD-HHMMSS.md`
+
 ## How Data Is Queried
 
 The GitHub GraphQL query fetches:
 - project items (`first: 40`),
-- issue/PR title, body, and state,
+- project name and URL,
+- issue/PR number, title, body, state, URL, created/updated timestamps,
+- issue/PR comment/review counts,
+- latest issue/PR comments per item (up to `MAX_COMMENTS_PER_ITEM`, default 20), including comment body text, author, timestamp, URL,
 - the project single-select field named `Status`.
+
+Lookback behavior:
+- The report window is the last 14 days by default (`LOOKBACK_DAYS` in `config.py`).
+- The script computes a recent-item count based on item/content `updatedAt`.
+- The script filters fetched comments to those created inside the lookback window before sending to AI.
+- The model receives both recent-window metrics and full fetched items for context.
+
+Not currently queried:
+- Full discussion thread text outside fetched issue/PR comments
+- Issue/PR timeline events
+- Full pull request review text
 
 ## Known Limitations
 
