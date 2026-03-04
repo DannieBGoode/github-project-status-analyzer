@@ -182,70 +182,69 @@ function renderActiveReport() {
   );
   const metadataMap = new Map(orderedMetadata.map((entry) => [entry.label.toLowerCase(), entry]));
   const projectUrlEntry = metadataMap.get("project url");
-  const contextualMetadata = ["generated", "ai provider", "project name"]
-    .map((key) => metadataMap.get(key))
-    .filter(Boolean);
-  if (!metadataMap.get("project name") && projectUrlEntry) {
-    contextualMetadata.push({ label: "Project", value: projectUrlEntry.value });
-  }
+  const projectNameEntry = metadataMap.get("project name");
+  const generatedEntry = metadataMap.get("generated");
+  const providerEntry = metadataMap.get("ai provider");
   const metricMetadata = orderedMetadata.filter(({ label }) => REPORT_METADATA_NUMERIC.has(label.toLowerCase()));
 
   container.innerHTML = `
     <article class="card report-card">
       <div class="report-toolbar">
-        <div>
-          <strong>Report ${activeReport.order}: ${escapeHtml(activeReport.filename)}</strong>
+        <div class="report-toolbar-main">
+          <div class="report-identity">
+            <strong>Report ${escapeHtml(activeReport.filename)}</strong>
+            ${
+              projectNameEntry
+                ? `<div class="report-project-line">${
+                    projectUrlEntry && /^https?:\/\//i.test(projectUrlEntry.value)
+                      ? `<a class="report-meta-project-link" href="${escapeHtml(
+                          projectUrlEntry.value
+                        )}" target="_blank" rel="noopener noreferrer">${escapeHtml(projectNameEntry.value)}</a>`
+                      : `<span>${escapeHtml(projectNameEntry.value)}</span>`
+                  }</div>`
+                : ""
+            }
+          </div>
+          <ul class="report-inline-meta" aria-label="Report context">
+            ${
+              generatedEntry
+                ? `<li><span class="meta-icon" aria-hidden="true">&#9716;</span><span>${escapeHtml(
+                    generatedEntry.value
+                  )}</span></li>`
+                : ""
+            }
+            ${
+              providerEntry
+                ? `<li><span class="meta-icon" aria-hidden="true">&#9783;</span><span>Provider ${escapeHtml(
+                    providerEntry.value
+                  )}</span></li>`
+                : ""
+            }
+          </ul>
+          <div class="report-actions-inline">
+            <button type="button" class="primary" id="report-download-btn">Download .md</button>
+            <button type="button" class="ghost" id="report-copy-btn">Copy</button>
+          </div>
         </div>
       </div>
       ${
         orderedMetadata.length
           ? `<section class="report-metadata" aria-label="Report metadata">
-               <h3>Report metadata</h3>
-               <dl class="report-metadata-facts">
-                   ${contextualMetadata
-                     .map(({ label, value }) => {
-                      const lowerLabel = label.toLowerCase();
-                      const linkProjectName =
-                        lowerLabel === "project name" &&
-                        projectUrlEntry &&
-                        /^https?:\/\//i.test(projectUrlEntry.value);
-                      const safeValue = escapeHtml(value);
-                       const valueHtml = linkProjectName
-                         ? `<a class="report-meta-project-link" href="${escapeHtml(
-                             projectUrlEntry.value
-                           )}" target="_blank" rel="noopener noreferrer">${safeValue}</a>`
-                        : /^https?:\/\//i.test(value)
-                          ? `<a href="${safeValue}" target="_blank" rel="noopener noreferrer">${safeValue}</a>`
-                          : `<span>${safeValue}</span>`;
-                       return `<div class="report-meta-fact"><dt>${escapeHtml(label)}</dt><dd>${valueHtml}</dd></div>`;
-                     })
-                     .join("")}
-                </dl>
-                ${
-                  metricMetadata.length
-                    ? `<dl class="report-metadata-kpis">
+               ${
+                 metricMetadata.length
+                   ? `<dl class="report-kpi-strip">
                   ${metricMetadata
                      .map(({ label, value }) => {
                       const safeValue = escapeHtml(value);
-                      return `<div class="report-kpi"><dt>${escapeHtml(label)}</dt><dd>${safeValue}</dd></div>`;
+                      return `<div class="report-kpi-pill"><dt>${escapeHtml(label)}</dt><dd>${safeValue}</dd></div>`;
                      })
                      .join("")}
                 </dl>`
-                    : ""
+                   : ""
                 }
-             </section>`
+              </section>`
           : ""
       }
-      <section class="report-export-toolbar" aria-label="Markdown report export">
-        <div class="report-export-copy">
-          <h3>Markdown report</h3>
-          <p>Copy or download the body exactly as shown below.</p>
-        </div>
-        <div class="actions">
-          <button type="button" class="ghost" id="report-copy-btn">Copy</button>
-          <button type="button" class="secondary" id="report-download-btn">Download .md</button>
-        </div>
-      </section>
       <div class="markdown-render" id="report-render"></div>
     </article>
   `;
