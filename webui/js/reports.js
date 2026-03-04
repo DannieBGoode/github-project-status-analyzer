@@ -2,6 +2,27 @@ import { renderMarkdown } from "./markdown.js";
 import { state } from "./state.js";
 import { byId, escapeHtml } from "./utils.js";
 
+const CALENDAR_ICON = `
+<svg class="inline-icon" aria-hidden="true" viewBox="0 0 16 16" focusable="false">
+  <rect x="2.25" y="3.25" width="11.5" height="10.5" rx="1.75" ry="1.75" fill="none" stroke="currentColor" stroke-width="1.5"></rect>
+  <path d="M4.75 1.75v3M11.25 1.75v3M2.75 6.25h10.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+</svg>`;
+
+const MODEL_ICON = `
+<svg class="inline-icon" aria-hidden="true" viewBox="0 0 16 16" focusable="false">
+  <path d="M3 3.5h10M3 8h10M3 12.5h10M5.25 3.5v9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+</svg>`;
+
+const FETCHED_ICON = `
+<svg class="inline-icon" aria-hidden="true" viewBox="0 0 16 16" focusable="false">
+  <path d="M2.75 3.75h10.5M2.75 8h10.5M2.75 12.25h10.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+</svg>`;
+
+const COMMENTS_ICON = `
+<svg class="inline-icon" aria-hidden="true" viewBox="0 0 16 16" focusable="false">
+  <path d="M3.5 3.25h9a1.75 1.75 0 0 1 1.75 1.75v4.5a1.75 1.75 0 0 1-1.75 1.75H8l-2.5 2v-2H3.5A1.75 1.75 0 0 1 1.75 9.5V5A1.75 1.75 0 0 1 3.5 3.25Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path>
+</svg>`;
+
 const REPORT_METADATA_LABELS = [
   "Generated",
   "AI Provider",
@@ -183,33 +204,27 @@ function renderActiveReport() {
   const totalItemsEntry = metadataMap.get("total items fetched");
   const updatedItemsEntry = metadataMap.get("items updated in lookback window");
   const newCommentsEntry = metadataMap.get("comments created in lookback window");
-  const contextParts = [];
-  if (generatedEntry) {
-    contextParts.push(`<span class="meta-part"><span class="meta-icon" aria-hidden="true">&#9684;</span>${escapeHtml(generatedEntry.value)}</span>`);
+  const generatedPart = generatedEntry
+    ? `<span class="meta-part">${CALENDAR_ICON}<span>${escapeHtml(generatedEntry.value)}</span></span>`
+    : "";
+  const providerPart = providerEntry
+    ? `<span class="meta-part meta-model">${MODEL_ICON}<span>${escapeHtml(providerEntry.value)}</span></span>`
+    : "";
+  let fetchedUpdatedPart = "";
+  if (totalItemsEntry || updatedItemsEntry) {
+    const fetchedValue = totalItemsEntry ? `<strong>${escapeHtml(totalItemsEntry.value)}</strong>` : "-";
+    const updatedValue = updatedItemsEntry
+      ? `<span class="stats-updated">Updated <strong>${escapeHtml(updatedItemsEntry.value)}</strong></span>`
+      : "";
+    fetchedUpdatedPart = `<span class="stats-segment">${FETCHED_ICON}Fetched ${fetchedValue}${
+      updatedValue ? `<span class="meta-sep" aria-hidden="true">/</span>${updatedValue}` : ""
+    }</span>`;
   }
-  if (providerEntry) {
-    contextParts.push(`<span class="meta-part"><span class="meta-icon" aria-hidden="true">&#9783;</span>${escapeHtml(providerEntry.value)}</span>`);
-  }
-  const statsParts = [];
-  if (totalItemsEntry) {
-    statsParts.push(
-      `<span class="stats-segment"><span class="stats-icon" aria-hidden="true">&#9783;</span>Fetched <strong>${escapeHtml(
-        totalItemsEntry.value
-      )}</strong></span>`
-    );
-  }
-  if (updatedItemsEntry) {
-    statsParts.push(
-      `<span class="stats-segment stats-updated">Updated <strong>${escapeHtml(updatedItemsEntry.value)}</strong></span>`
-    );
-  }
-  if (newCommentsEntry) {
-    statsParts.push(
-      `<span class="stats-segment"><span class="stats-icon" aria-hidden="true">&#9993;</span>Comments <strong class="stats-comments">${escapeHtml(
+  const commentsPart = newCommentsEntry
+    ? `<span class="stats-segment">${COMMENTS_ICON}Comments: <strong class="stats-comments">${escapeHtml(
         newCommentsEntry.value
       )}</strong></span>`
-    );
-  }
+    : "";
 
   container.innerHTML = `
     <article class="card report-card">
@@ -230,16 +245,10 @@ function renderActiveReport() {
             <div class="report-file">${escapeHtml(activeReport.filename)}</div>
           </div>
           <ul class="report-inline-stats" aria-label="Report activity metrics">
-            ${
-              contextParts.length
-                ? `<li class="stats-context">${contextParts.join('<span class="meta-sep" aria-hidden="true">&middot;</span>')}</li>`
-                : ""
-            }
-            ${
-              statsParts.length
-                ? `<li>${statsParts.join('<span class="meta-sep" aria-hidden="true">&bull;</span>')}</li>`
-                : ""
-            }
+            ${generatedPart ? `<li class="stats-context">${generatedPart}</li>` : ""}
+            ${fetchedUpdatedPart ? `<li class="stats-summary-main">${fetchedUpdatedPart}</li>` : ""}
+            ${providerPart ? `<li class="stats-context-model">${providerPart}</li>` : ""}
+            ${commentsPart ? `<li class="stats-summary-comments">${commentsPart}</li>` : ""}
           </ul>
           <div class="report-actions-inline">
             <button type="button" class="primary report-download-btn" id="report-download-btn">Download .md</button>

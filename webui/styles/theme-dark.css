@@ -77,7 +77,16 @@ body[data-theme="dark"] .report-card::before {
 
 body[data-theme="dark"] .report-file,
 body[data-theme="dark"] .stats-context,
+body[data-theme="dark"] .stats-context-model,
 body[data-theme="dark"] .report-inline-stats {
+  color: oklch(0.91 0.014 160);
+}
+
+body[data-theme="dark"] .report-inline-stats li,
+body[data-theme="dark"] .stats-context,
+body[data-theme="dark"] .stats-context-model,
+body[data-theme="dark"] .meta-part,
+body[data-theme="dark"] .stats-segment {
   color: oklch(0.91 0.014 160);
 }
 
@@ -85,17 +94,13 @@ body[data-theme="dark"] .meta-sep {
   color: oklch(0.84 0.014 160);
 }
 
-body[data-theme="dark"] .stats-icon {
+body[data-theme="dark"] .inline-icon {
   color: oklch(0.86 0.015 160);
 }
 
 body[data-theme="dark"] .report-inline-stats,
 body[data-theme="dark"] .report-actions-inline {
   border-left-color: oklch(0.45 0.03 162 / 0.78);
-}
-
-body[data-theme="dark"] .meta-icon {
-  color: oklch(0.74 0.02 160);
 }
 
 body[data-theme="dark"] .report-meta-project-link {

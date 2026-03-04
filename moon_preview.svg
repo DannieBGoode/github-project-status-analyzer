@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="240" height="240">
+  <rect width="120" height="120" fill="#f0f0f0"/>
+  <g transform="translate(12,12) scale(4)">
+    <mask id="moon-cutout-icon-preview">
+      <rect width="24" height="24" fill="white"></rect>
+      <circle cx="16.2" cy="8.4" r="7.6" fill="black"></circle>
+    </mask>
+    <circle cx="11.2" cy="12" r="9.2" fill="#000" mask="url(#moon-cutout-icon-preview)"></circle>
+  </g>
+</svg>
