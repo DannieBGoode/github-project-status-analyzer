@@ -6,12 +6,15 @@
 
 ## Current Flow
 
-1. Fetch project data from GitHub GraphQL API.
-2. Build a reporting prompt from raw project JSON.
-3. Generate summary through selected provider (`AI_PROVIDER`):
+1. Resolve project target:
+   - Use `PROJECT_ID` if provided, otherwise
+   - Resolve from `PROJECT_URL` (`/orgs/.../projects/<n>` or `/users/.../projects/<n>`) via GitHub GraphQL.
+2. Fetch project data from GitHub GraphQL API.
+3. Build a reporting prompt from raw project JSON.
+4. Generate summary through selected provider (`AI_PROVIDER`):
    - `gemini` via Google Gemini API
    - `openai` via OpenAI Chat Completions API
-4. Print report to stdout.
+5. Print report to stdout.
 
 ## Planned Extensions (from TODOs in code)
 

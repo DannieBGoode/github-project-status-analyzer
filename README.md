@@ -6,10 +6,13 @@ A lightweight Python utility that generates an executive project status report f
 
 The script in `src/gitHubAISummary.py` automates a simple reporting workflow:
 
-1. Calls the GitHub GraphQL API to read up to 40 items from a GitHub Project V2 board.
-2. Extracts issue/PR content and the project `Status` field.
-3. Sends the raw JSON payload to your selected AI provider (`gemini` or `openai`) with a reporting prompt.
-4. Prints an executive summary with sections for:
+1. Resolves your target project:
+   - uses `PROJECT_ID` directly if provided, or
+   - auto-resolves from `PROJECT_URL`.
+2. Calls the GitHub GraphQL API to read up to 40 items from a GitHub Project V2 board.
+3. Extracts issue/PR content and the project `Status` field.
+4. Sends the raw JSON payload to your selected AI provider (`gemini` or `openai`) with a reporting prompt.
+5. Prints an executive summary with sections for:
    - Key achievements
    - Risks
    - Issues/blockers
@@ -31,7 +34,7 @@ Current implementation is a prototype with TODOs for:
 
 - Python 3.9+
 - A GitHub token with permission to read your target Project V2 data
-- A GitHub Project V2 node ID
+- A GitHub Project V2 URL or Project V2 node ID
 - One AI provider credential:
   - Gemini API key, or
   - OpenAI API key
@@ -55,8 +58,11 @@ copy config.example.py config.py
 
 Required for all runs:
 - `GITHUB_TOKEN`
-- `PROJECT_ID`
 - `AI_PROVIDER` (`"gemini"` or `"openai"`)
+
+Project target (choose one):
+- Preferred: `PROJECT_URL` (script auto-resolves `PROJECT_ID`)
+- Optional override: `PROJECT_ID`
 
 If `AI_PROVIDER = "gemini"`:
 - `GEMINI_API_KEY`
@@ -65,6 +71,30 @@ If `AI_PROVIDER = "gemini"`:
 If `AI_PROVIDER = "openai"`:
 - `OPENAI_API_KEY`
 - optional `OPENAI_MODEL`
+
+## Where To Get Keys And IDs
+
+- `OPENAI_API_KEY`
+  - OpenAI API keys page: `https://platform.openai.com/api-keys`
+  - Create a new secret key and copy it into `config.py`.
+
+- `GEMINI_API_KEY`
+  - Google AI Studio: `https://aistudio.google.com/apikey`
+  - Create an API key and copy it into `config.py`.
+
+- `GITHUB_TOKEN`
+  - GitHub fine-grained token creation: `https://github.com/settings/personal-access-tokens/new`
+  - Create a token with access to the organization/repo/project you need.
+  - At minimum, grant permissions required to read Project V2 data via GraphQL.
+
+- `PROJECT_URL` (recommended)
+  - Copy directly from your browser, for example:
+    - `https://github.com/orgs/input-output-hk/projects/26`
+    - `https://github.com/users/<username>/projects/<number>`
+
+- `PROJECT_ID` (optional override)
+  - This is auto-resolved from `PROJECT_URL` by default.
+  - Only set manually if you want to bypass URL resolution.
 
 ## Run
 
@@ -97,6 +127,6 @@ The GitHub GraphQL query fetches:
 
 - Add schema-safe parsing and AI-response validation.
 - Add retries/backoff policies for API calls.
-- Add CLI arguments (project ID, item limit, output format).
+- Add CLI arguments (project URL/ID, item limit, output format).
 - Add unit tests with mocked GitHub/AI API responses.
 - Add optional outputs: markdown file, Slack webhook, Google Docs.
