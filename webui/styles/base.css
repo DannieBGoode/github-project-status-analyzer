@@ -134,6 +134,26 @@ body {
   height: 0.92rem;
 }
 
+.hero-actions .utility-btn,
+.hero-actions .theme-toggle {
+  width: 2.85rem;
+  min-width: 2.85rem;
+  min-height: 2.85rem;
+  padding: 0;
+  justify-content: center;
+  gap: 0;
+}
+
+.hero-actions .utility-btn img {
+  width: 1.18rem;
+  height: 1.18rem;
+}
+
+.hero-actions .theme-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
 .utility-btn.active {
   border-color: color-mix(in oklch, var(--accent) 58%, var(--line-strong) 42%);
   background: color-mix(in oklch, var(--accent-soft) 44%, white 56%);
@@ -151,7 +171,7 @@ body {
 
 .subtitle {
   margin: 0;
-  max-width: 62ch;
+  max-width: none;
   color: var(--muted);
   font-size: clamp(0.95rem, 1.35vw, 1.04rem);
   line-height: 1.5;
@@ -512,22 +532,31 @@ button.ghost:active:not(:disabled) {
   transform: translateX(1px);
 }
 
-.report-inline-meta {
+.report-title-meta {
   list-style: none;
-  margin: 0;
-  padding: 0 0 0 0.95rem;
-  border-left: 1px solid color-mix(in oklch, var(--line-strong) 68%, white 32%);
+  margin: 0.35rem 0 0;
+  padding: 0;
   display: grid;
-  gap: 0.28rem;
+  gap: 0.18rem;
 }
 
-.report-inline-meta li {
+.report-title-meta li {
   display: inline-flex;
   align-items: center;
-  gap: 0.48rem;
-  color: color-mix(in oklch, var(--ink) 78%, var(--muted) 22%);
-  font-size: 0.88rem;
+  gap: 0.42rem;
+  color: color-mix(in oklch, var(--ink) 74%, var(--muted) 26%);
+  font-size: 0.86rem;
   white-space: nowrap;
+}
+
+.meta-part {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.meta-sep {
+  color: color-mix(in oklch, var(--ink) 52%, var(--muted) 48%);
 }
 
 .meta-icon {
@@ -535,9 +564,50 @@ button.ghost:active:not(:disabled) {
   font-size: 0.93rem;
 }
 
+.report-inline-stats {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 0.95rem;
+  border-left: 1px solid color-mix(in oklch, var(--line-strong) 68%, white 32%);
+  display: grid;
+  gap: 0.24rem;
+}
+
+.report-inline-stats li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: color-mix(in oklch, var(--ink) 78%, var(--muted) 22%);
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+
+.stats-icon {
+  color: color-mix(in oklch, var(--ink) 58%, var(--muted) 42%);
+  font-size: 0.9rem;
+  margin-right: 0.08rem;
+}
+
+.stats-label {
+  color: color-mix(in oklch, var(--ink) 58%, var(--muted) 42%);
+}
+
+.stats-total {
+  font-weight: 700;
+}
+
+.stats-updated {
+  font-weight: 700;
+  color: color-mix(in oklch, var(--done) 66%, var(--ink) 34%);
+}
+
+.stats-comments {
+  font-weight: 700;
+}
+
 .report-actions-inline {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-end;
   gap: 0.42rem;
   border-left: 1px solid color-mix(in oklch, var(--line-strong) 68%, white 32%);
@@ -545,67 +615,76 @@ button.ghost:active:not(:disabled) {
 }
 
 .report-actions-inline button {
-  min-width: 154px;
+  min-width: 160px;
 }
 
-.report-metadata {
-  margin-bottom: var(--space-3);
-  margin-top: 0.18rem;
-  border-top: 1px solid color-mix(in oklch, var(--line) 86%, white 14%);
-  padding-top: 0.68rem;
+.markdown-shell {
+  position: relative;
 }
 
-.report-kpi-strip {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.52rem;
-}
-
-.report-kpi-pill {
+.markdown-copy-btn {
+  position: absolute;
+  top: 0.44rem;
+  right: 0.44rem;
+  z-index: 2;
+  width: 2.5rem;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  height: 2.5rem;
   border: 1px solid color-mix(in oklch, var(--line-strong) 72%, white 28%);
-  border-radius: 12px;
-  background: color-mix(in oklch, var(--surface-soft) 60%, white 40%);
-  padding: 0.44rem 0.72rem;
+  border-radius: 8px;
+  background: color-mix(in oklch, var(--surface-soft) 80%, white 20%);
+  color: color-mix(in oklch, var(--ink) 70%, var(--muted) 30%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.16rem;
+  padding: 0;
+}
+
+.markdown-copy-btn svg {
+  width: 1.08rem;
+  height: 1.08rem;
+}
+
+.markdown-copy-btn:hover {
+  transform: translateY(-1px);
+}
+
+.markdown-copy-btn::after {
+  content: "";
+  position: absolute;
+  top: -0.55rem;
+  right: 2.85rem;
   opacity: 0;
-  animation: slide-up 0.3s var(--ease-out) forwards;
+  transition: opacity 0.14s ease;
 }
 
-.report-kpi-pill:nth-child(1) {
-  animation-delay: 120ms;
+.markdown-copy-btn.is-copied {
+  color: color-mix(in oklch, var(--done) 74%, var(--ink) 26%);
+  border-color: color-mix(in oklch, var(--done) 66%, var(--line-strong) 34%);
 }
 
-.report-kpi-pill:nth-child(2) {
-  animation-delay: 170ms;
-}
-
-.report-kpi-pill:nth-child(3) {
-  animation-delay: 220ms;
-}
-
-.report-kpi-pill dt {
-  margin: 0;
-  color: color-mix(in oklch, var(--ink) 62%, var(--muted) 38%);
-  font-size: 0.7rem;
+.markdown-copy-btn.is-copied::after {
+  content: "Copied!";
+  background: color-mix(in oklch, var(--ink) 82%, white 18%);
+  color: color-mix(in oklch, white 90%, var(--surface) 10%);
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  padding: 0.2rem 0.42rem;
+  border-radius: 6px;
+  opacity: 1;
 }
 
-.report-kpi-pill dd {
-  margin: 0.12rem 0 0;
-  color: color-mix(in oklch, var(--ink) 94%, var(--muted) 6%);
-  font-size: 1.24rem;
-  font-weight: 800;
-  line-height: 1.05;
+.markdown-copy-btn.is-error {
+  color: color-mix(in oklch, var(--failed) 80%, var(--ink) 20%);
+  border-color: color-mix(in oklch, var(--failed) 72%, var(--line-strong) 28%);
 }
 
 .markdown-render {
   border: 1px solid color-mix(in oklch, var(--line) 82%, white 18%);
   border-radius: var(--radius-md);
-  padding: 0.88rem;
+  padding: 2.1rem 0.88rem 0.88rem;
   min-height: 280px;
   background: color-mix(in oklch, var(--surface) 80%, white 20%);
   overflow: auto;
@@ -819,27 +898,28 @@ button.ghost:active:not(:disabled) {
     gap: 0.6rem;
   }
 
-  .report-inline-meta,
+  .report-inline-stats,
   .report-actions-inline {
     border-left: 0;
     padding-left: 0;
   }
 
-  .report-inline-meta li {
+  .report-title-meta li,
+  .report-inline-stats li {
     white-space: normal;
+  }
+
+  .report-inline-stats li {
+    align-items: flex-start;
   }
 
   .report-actions-inline {
     width: 100%;
-    align-items: stretch;
+    align-items: flex-start;
   }
 
   .report-actions-inline button {
-    width: 100%;
-  }
-
-  .report-kpi-strip {
-    grid-template-columns: 1fr;
+    min-width: 0;
   }
 
   .loading-panel {

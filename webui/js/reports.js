@@ -14,11 +14,6 @@ const REPORT_METADATA_LABELS = [
 
 const REPORT_METADATA_LOOKUP = new Set(REPORT_METADATA_LABELS.map((label) => label.toLowerCase()));
 const REPORT_METADATA_ORDER = new Map(REPORT_METADATA_LABELS.map((label, idx) => [label.toLowerCase(), idx]));
-const REPORT_METADATA_NUMERIC = new Set([
-  "total items fetched",
-  "items updated in lookback window",
-  "comments created in lookback window",
-]);
 
 function normalizeMetadataLine(line) {
   return line.replace(/^[-*]\s+/, "").trim();
@@ -185,7 +180,24 @@ function renderActiveReport() {
   const projectNameEntry = metadataMap.get("project name");
   const generatedEntry = metadataMap.get("generated");
   const providerEntry = metadataMap.get("ai provider");
-  const metricMetadata = orderedMetadata.filter(({ label }) => REPORT_METADATA_NUMERIC.has(label.toLowerCase()));
+  const totalItemsEntry = metadataMap.get("total items fetched");
+  const updatedItemsEntry = metadataMap.get("items updated in lookback window");
+  const newCommentsEntry = metadataMap.get("comments created in lookback window");
+  const contextParts = [];
+  if (generatedEntry) {
+    contextParts.push(
+      `<span class="meta-part"><span class="meta-icon" aria-hidden="true">&#9684;</span><span>${escapeHtml(
+        generatedEntry.value
+      )}</span></span>`
+    );
+  }
+  if (providerEntry) {
+    contextParts.push(
+      `<span class="meta-part"><span class="meta-icon" aria-hidden="true">&#9783;</span><span>${escapeHtml(
+        providerEntry.value
+      )}</span></span>`
+    );
+  }
 
   container.innerHTML = `
     <article class="card report-card">
@@ -204,48 +216,56 @@ function renderActiveReport() {
                   }</div>`
                 : ""
             }
-          </div>
-          <ul class="report-inline-meta" aria-label="Report context">
             ${
-              generatedEntry
-                ? `<li><span class="meta-icon" aria-hidden="true">&#9716;</span><span>${escapeHtml(
-                    generatedEntry.value
-                  )}</span></li>`
+              contextParts.length
+                ? `<ul class="report-title-meta" aria-label="Report generation context">
+                     <li>${contextParts.join('<span class="meta-sep" aria-hidden="true">·</span>')}</li>
+                   </ul>`
+                : ""
+            }
+          </div>
+          <ul class="report-inline-stats" aria-label="Report activity metrics">
+            ${
+              totalItemsEntry && updatedItemsEntry
+                ? `<li><span class="stats-icon" aria-hidden="true">&#9783;</span><span class="stats-label">Items Fetched:</span> <span class="stats-total">${escapeHtml(
+                    totalItemsEntry.value
+                  )}</span> / <span class="stats-updated">${escapeHtml(updatedItemsEntry.value)} Updated</span></li>`
                 : ""
             }
             ${
-              providerEntry
-                ? `<li><span class="meta-icon" aria-hidden="true">&#9783;</span><span>Provider ${escapeHtml(
-                    providerEntry.value
+              newCommentsEntry
+                ? `<li><span class="stats-icon" aria-hidden="true">&#9993;</span><span class="stats-label">New Comments:</span> <span class="stats-comments">${escapeHtml(
+                    newCommentsEntry.value
                   )}</span></li>`
                 : ""
             }
           </ul>
           <div class="report-actions-inline">
             <button type="button" class="primary" id="report-download-btn">Download .md</button>
-            <button type="button" class="ghost" id="report-copy-btn">Copy</button>
           </div>
         </div>
       </div>
-      ${
-        orderedMetadata.length
-          ? `<section class="report-metadata" aria-label="Report metadata">
-               ${
-                 metricMetadata.length
-                   ? `<dl class="report-kpi-strip">
-                  ${metricMetadata
-                     .map(({ label, value }) => {
-                      const safeValue = escapeHtml(value);
-                      return `<div class="report-kpi-pill"><dt>${escapeHtml(label)}</dt><dd>${safeValue}</dd></div>`;
-                     })
-                     .join("")}
-                </dl>`
-                   : ""
-                }
-              </section>`
-          : ""
-      }
-      <div class="markdown-render" id="report-render"></div>
+      <div class="markdown-shell">
+        <button
+          type="button"
+          class="markdown-copy-btn"
+          id="report-copy-btn"
+          aria-label="Copy markdown report"
+          title="Copy markdown report"
+        >
+          <svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16" focusable="false">
+            <path
+              fill="currentColor"
+              d="M0 6.75C0 5.78.78 5 1.75 5h5.5C8.22 5 9 5.78 9 6.75v7.5C9 15.22 8.22 16 7.25 16h-5.5A1.75 1.75 0 0 1 0 14.25v-7.5Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h5.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25h-5.5Z"
+            ></path>
+            <path
+              fill="currentColor"
+              d="M10.75 0A1.75 1.75 0 0 1 12.5 1.75v7.5A1.75 1.75 0 0 1 10.75 11h-.5V9.5h.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25h-5.5a.25.25 0 0 0-.25.25v.5H3.5v-.5A1.75 1.75 0 0 1 5.25 0h5.5Z"
+            ></path>
+          </svg>
+        </button>
+        <div class="markdown-render" id="report-render"></div>
+      </div>
     </article>
   `;
 
@@ -255,24 +275,31 @@ function renderActiveReport() {
   const downloadButton = byId("report-download-btn");
 
   copyButton.addEventListener("click", async () => {
-    const original = copyButton.textContent;
+    if (copyButton.dataset.busy === "true") return;
+    copyButton.dataset.busy = "true";
     try {
       await navigator.clipboard.writeText(activeReport.markdown);
-      const temp = getTemporaryButtonState(original, "Copied", "Copy failed", false);
-      copyButton.textContent = temp.text;
-      copyButton.disabled = temp.disabled;
+      copyButton.classList.remove("is-error");
+      copyButton.classList.add("is-copied");
+      copyButton.setAttribute("aria-label", "Copied");
+      copyButton.setAttribute("title", "Copied");
       setTimeout(() => {
-        copyButton.textContent = temp.resetText;
-        copyButton.disabled = temp.resetDisabled;
-      }, temp.resetAfterMs);
+        copyButton.classList.remove("is-copied");
+        delete copyButton.dataset.busy;
+        copyButton.setAttribute("aria-label", "Copy markdown report");
+        copyButton.setAttribute("title", "Copy markdown report");
+      }, 1500);
     } catch (_err) {
-      const temp = getTemporaryButtonState(original, "Copied", "Copy failed", true);
-      copyButton.textContent = temp.text;
-      copyButton.disabled = temp.disabled;
+      copyButton.classList.remove("is-copied");
+      copyButton.classList.add("is-error");
+      copyButton.setAttribute("aria-label", "Copy failed");
+      copyButton.setAttribute("title", "Copy failed");
       setTimeout(() => {
-        copyButton.textContent = temp.resetText;
-        copyButton.disabled = temp.resetDisabled;
-      }, temp.resetAfterMs);
+        copyButton.classList.remove("is-error");
+        delete copyButton.dataset.busy;
+        copyButton.setAttribute("aria-label", "Copy markdown report");
+        copyButton.setAttribute("title", "Copy markdown report");
+      }, 1800);
     }
   });
 
