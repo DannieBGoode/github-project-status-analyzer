@@ -108,6 +108,26 @@ python src/gitHubAISummary.py
 After each run, the report is saved as:
 - `reports/report-YYYYMMDD-HHMMSS.md`
 
+## Web UI (Local)
+
+Run a minimal local web UI with prefilled values from `config.py` (API keys shown masked):
+
+```bash
+python web_ui.py
+```
+
+Then open:
+
+```text
+http://127.0.0.1:5000
+```
+
+Capabilities:
+- switch AI provider/model from the UI,
+- edit runtime variables before execution,
+- show loading state while report is being generated,
+- download generated markdown file directly from browser.
+
 ## How Data Is Queried
 
 The GitHub GraphQL query fetches:

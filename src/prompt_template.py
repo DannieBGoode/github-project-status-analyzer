@@ -37,7 +37,7 @@ Mandatory output rules:
   - `No risks.`
   - `No issues.`
   - `No blockers.`
-- Whenever referencing an issue or pull request, use a Markdown hyperlink format like `[#1234](https://github.com/org/repo/issues/1234)` using URLs from the provided data.
+- Whenever referencing an issue or pull request, use hyperlink format like [#1234](https://github.com/org/repo/issues/1234) using URLs from the provided data so that the hyperlink is displayed as a clickable link in markdown format. Do not escape the markdown syntax.
 
 Data Payload:
 {raw_data}

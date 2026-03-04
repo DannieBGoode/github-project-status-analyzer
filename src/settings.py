@@ -14,6 +14,10 @@ class Settings:
     gemini_model: str
     openai_api_key: str
     openai_model: str
+    ai_timeout_seconds: int
+    ai_max_retries: int
+    report_timezone: str
+    report_timezone_label: str
 
     @property
     def effective_max_items(self):
@@ -32,7 +36,15 @@ def load_settings(config_module):
             getattr(config_module, "MAX_COMMENTS_PER_ITEM", 20)
         ),
         gemini_api_key=getattr(config_module, "GEMINI_API_KEY", "").strip(),
-        gemini_model=getattr(config_module, "GEMINI_MODEL", "gemini-2.5-flash").strip(),
+        gemini_model=getattr(
+            config_module, "GEMINI_MODEL", "gemini-2.5-flash-lite-preview-09-2025"
+        ).strip(),
         openai_api_key=getattr(config_module, "OPENAI_API_KEY", "").strip(),
-        openai_model=getattr(config_module, "OPENAI_MODEL", "gpt-4.1-mini").strip(),
+        openai_model=getattr(config_module, "OPENAI_MODEL", "gpt-5-nano").strip(),
+        ai_timeout_seconds=int(getattr(config_module, "AI_TIMEOUT_SECONDS", 120)),
+        ai_max_retries=int(getattr(config_module, "AI_MAX_RETRIES", 1)),
+        report_timezone=getattr(config_module, "REPORT_TIMEZONE", "").strip(),
+        report_timezone_label=getattr(
+            config_module, "REPORT_TIMEZONE_LABEL", ""
+        ).strip(),
     )

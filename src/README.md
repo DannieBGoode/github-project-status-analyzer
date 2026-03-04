@@ -7,12 +7,19 @@
 ## Modules
 
 - `settings.py`: loads and normalizes runtime settings from `config.py`.
-- `github_api.py`: GitHub GraphQL calls and project URL -> project ID resolution.
+- `github_client.py`: low-level GitHub GraphQL transport.
+- `github_queries.py`: GitHub GraphQL query strings.
+- `project_target.py`: project URL parsing and `PROJECT_ID` resolution.
+- `github_project_data.py`: project item retrieval from GitHub.
 - `payload_builder.py`: transforms raw GitHub data into analysis payload + metrics.
 - `prompt_template.py`: report prompt template and prompt rendering.
-- `ai_clients.py`: Gemini/OpenAI API calls and provider dispatch.
+- `ai_http.py`: shared HTTP/retry utility for AI providers.
+- `ai_provider_gemini.py`: Gemini API integration.
+- `ai_provider_openai.py`: OpenAI API integration.
+- `ai_clients.py`: provider dispatch orchestration.
 - `report_formatting.py`: post-processing (issue links, headings, top metrics block).
 - `report_writer.py`: timestamped markdown report file output.
+- `report_runner.py`: end-to-end report pipeline orchestration.
 
 ## Current Flow
 

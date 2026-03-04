@@ -26,13 +26,15 @@ AI_PROVIDER = "gemini"
 LOOKBACK_DAYS = 14
 MAX_ITEMS = 40
 MAX_COMMENTS_PER_ITEM = 20
+AI_TIMEOUT_SECONDS = 120
+AI_MAX_RETRIES = 1
 
 # Gemini settings
 # Create API key at: https://aistudio.google.com/apikey
 GEMINI_API_KEY = "AIzaSy_your_gemini_api_key_here"
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-2.5-flash-lite-preview-09-2025"
 
 # OpenAI settings
 # Create API key at: https://platform.openai.com/api-keys
 OPENAI_API_KEY = "sk-your-openai-api-key"
-OPENAI_MODEL = "gpt-4.1-mini"
+OPENAI_MODEL = "gpt-5-nano"
