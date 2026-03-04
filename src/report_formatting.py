@@ -63,9 +63,9 @@ def enforce_top_metrics_block(summary, data):
         cleaned_lines.append(line)
 
     metrics_block = [
-        f"*   **Total Items Fetched:** {total_items}",
-        f"*   **Items Updated in Lookback Window:** {updated_items}",
-        f"*   **Comments Created in Lookback Window:** {comments_count}",
+        f"- Total Items Fetched: `{total_items}`",
+        f"- Items Updated in Lookback Window: `{updated_items}`",
+        f"- Comments Created in Lookback Window: `{comments_count}`",
         "",
     ]
 
