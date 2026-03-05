@@ -115,6 +115,10 @@
   color: color-mix(in oklch, var(--ink) 75%, var(--accent-strong) 25%);
 }
 
+.hero-top h1 {
+  margin: 0;
+}
+
 .hero h1 {
   margin: 0.45rem 0 0.6rem;
   max-width: 17ch;

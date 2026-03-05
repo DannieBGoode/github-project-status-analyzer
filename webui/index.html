@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Github Project Status Analyzer</title>
+    <title>Executive Report Studio</title>
     <link rel="stylesheet" href="/styles.css?v=20260304-17" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.svg" />
@@ -12,7 +12,7 @@
     <main class="container">
       <header class="hero">
         <div class="hero-top">
-          <p class="eyebrow">GitHub Project Status Analyzer</p>
+          <h1>Executive Report Studio</h1>
           <div class="hero-actions">
             <button
               id="settings-btn"
@@ -30,11 +30,7 @@
             </button>
           </div>
         </div>
-        <h1>Executive Report Studio</h1>
-        <p class="subtitle">
-          Turn project board activity into leadership-ready updates with clear status narrative,
-          delivery risks, and recommended next actions.
-        </p>
+        <p class="subtitle">Analyze GitHub project boards. Generate leadership-ready status reports.</p>
         <p id="app-error" class="app-error hidden" role="alert"></p>
       </header>
 
@@ -67,61 +63,46 @@
       <section id="tab-generator" class="tab-panel active" role="tabpanel" aria-labelledby="tab-trigger-generator">
         <div class="card">
           <form id="report-form">
-            <section class="form-block">
-              <h2>1. Project Scope</h2>
-              <p class="block-note">
-                Paste your GitHub Project board URL to get started.
-              </p>
-              <div class="grid one">
-                <label>
-                  <span>Project Board URL</span>
-                  <input id="project_url" type="text" />
-                </label>
-              </div>
-
-              <details class="advanced-controls">
-                <summary>Advanced Controls</summary>
-                <div class="advanced-body">
-                  <div class="grid two">
-                    <label>
-                      <span>Lookback Days</span>
-                      <input id="lookback_days" type="number" min="1" max="365" />
-                    </label>
-                    <label>
-                      <span>Max Items (capped at 100)</span>
-                      <input id="max_items" type="number" min="1" max="100" />
-                    </label>
-                  </div>
-                  <div class="grid one">
-                    <label>
-                      <span>Max Comments Per Item</span>
-                      <input id="max_comments_per_item" type="number" min="1" />
-                    </label>
-                  </div>
+            <div class="grid one">
+              <label>
+                <span>Project Board URL</span>
+                <input id="project_url" type="text" placeholder="https://github.com/orgs/…/projects/…" />
+              </label>
+            </div>
+            <details class="advanced-controls">
+              <summary>Advanced Controls</summary>
+              <div class="advanced-body">
+                <div class="grid two">
+                  <label>
+                    <span>AI Provider</span>
+                    <select id="ai_provider">
+                      <option value="gemini">Gemini</option>
+                      <option value="openai">OpenAI</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Model</span>
+                    <select id="model"></select>
+                  </label>
                 </div>
-              </details>
-            </section>
-
-            <section class="form-block">
-              <h2>2. Model Setup</h2>
-              <p class="block-note">
-                Choose provider and model profile used for narrative synthesis.
-              </p>
-              <div class="grid two">
-                <label>
-                  <span>AI Provider</span>
-                  <select id="ai_provider">
-                    <option value="gemini">Gemini</option>
-                    <option value="openai">OpenAI</option>
-                  </select>
-                </label>
-                <label>
-                  <span>Model</span>
-                  <select id="model"></select>
-                </label>
+                <div class="grid two">
+                  <label>
+                    <span>Lookback Days</span>
+                    <input id="lookback_days" type="number" min="1" max="365" />
+                  </label>
+                  <label>
+                    <span>Max Items (capped at 100)</span>
+                    <input id="max_items" type="number" min="1" max="100" />
+                  </label>
+                </div>
+                <div class="grid one">
+                  <label>
+                    <span>Max Comments Per Item</span>
+                    <input id="max_comments_per_item" type="number" min="1" />
+                  </label>
+                </div>
               </div>
-            </section>
-
+            </details>
             <div class="actions">
               <button id="run-btn" type="button" class="primary">Run Report</button>
             </div>
