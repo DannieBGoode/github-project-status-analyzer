@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap");
+
+:root {
+  --bg: oklch(0.965 0.015 150);
+  --ink: oklch(0.22 0.03 160);
+  --muted: oklch(0.47 0.025 158);
+  --surface: oklch(0.99 0.008 150);
+  --surface-soft: oklch(0.97 0.012 154);
+  --line: oklch(0.88 0.02 152);
+  --line-strong: oklch(0.76 0.045 154);
+  --accent: oklch(0.54 0.15 160);
+  --accent-strong: oklch(0.43 0.12 162);
+  --accent-soft: oklch(0.92 0.05 162);
+  --danger-bg: oklch(0.94 0.04 25);
+  --danger-line: oklch(0.78 0.09 25);
+  --danger-ink: oklch(0.38 0.12 25);
+  --pending: oklch(0.7 0.02 160);
+  --in-progress: oklch(0.7 0.13 245);
+  --done: oklch(0.72 0.15 150);
+  --failed: oklch(0.66 0.16 25);
+  --chip-border: 1px solid color-mix(in oklch, var(--line-strong) 72%, white 28%);
+  --chip-bg: oklch(1 0 0 / 0.8);
+  --chip-ink: color-mix(in oklch, var(--ink) 78%, var(--muted) 22%);
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --ease-out: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: "Instrument Sans", "Trebuchet MS", sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  background:
+    radial-gradient(circle at 8% -18%, oklch(0.9 0.06 160 / 0.55), transparent 42%),
+    radial-gradient(circle at 90% 120%, oklch(0.93 0.04 130 / 0.7), transparent 45%),
+    linear-gradient(125deg, oklch(0.97 0.016 145) 0%, oklch(0.955 0.012 165) 45%, oklch(0.968 0.01 130) 100%);
+}
