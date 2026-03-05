@@ -160,48 +160,88 @@ function downloadMarkdown(filename, markdown) {
   URL.revokeObjectURL(url);
 }
 
-function getActiveReport() {
-  if (!state.reports.length) return null;
-  return state.reports.find((report) => report.id === state.activeReportId) || state.reports[state.reports.length - 1];
+function parseReportHash() {
+  const hash = window.location.hash;
+  const match = hash.match(/^#report\/(.+)$/);
+  return match ? match[1] : null;
 }
 
-function renderReportPicker() {
-  const picker = byId("report-picker");
-  if (!picker) return;
+function showTableView() {
+  const tableView = byId("reports-table-view");
+  const detailView = byId("reports-detail-view");
+  if (tableView) tableView.classList.remove("hidden");
+  if (detailView) detailView.classList.add("hidden");
+}
+
+function showDetailView() {
+  const tableView = byId("reports-table-view");
+  const detailView = byId("reports-detail-view");
+  if (tableView) tableView.classList.add("hidden");
+  if (detailView) detailView.classList.remove("hidden");
+}
+
+function renderReportTable() {
+  const empty = byId("reports-empty");
+  const tableCard = byId("reports-table-card");
+  const tbody = byId("reports-table-body");
+  if (!empty || !tableCard || !tbody) return;
 
   if (!state.reports.length) {
-    picker.innerHTML = "";
-    picker.disabled = true;
-    return;
-  }
-
-  picker.disabled = false;
-  picker.innerHTML = state.reports
-    .map(
-      (report) =>
-        `<option value="${report.id}">Report ${report.order}: ${escapeHtml(report.filename)}</option>`
-    )
-    .join("");
-  picker.value = state.activeReportId;
-}
-
-function renderActiveReport() {
-  const container = byId("reports-list");
-  const empty = byId("reports-empty");
-  const controls = byId("reports-controls");
-  if (!container || !empty || !controls) return;
-
-  const activeReport = getActiveReport();
-  if (!activeReport) {
-    container.innerHTML = "";
     empty.classList.remove("hidden");
-    controls.classList.add("hidden");
+    tableCard.classList.add("hidden");
     return;
   }
 
   empty.classList.add("hidden");
-  controls.classList.remove("hidden");
-  const orderedMetadata = [...activeReport.metadata].sort(
+  tableCard.classList.remove("hidden");
+
+  tbody.innerHTML = state.reports
+    .map((report) => {
+      const metadataMap = new Map(report.metadata.map((e) => [e.label.toLowerCase(), e.value]));
+      const projectName = metadataMap.get("project name") || "—";
+      const generated = metadataMap.get("generated") || "";
+      const aiProvider = metadataMap.get("ai provider") || "—";
+      const totalItems = metadataMap.get("total items fetched") || "—";
+      const updatedItems = metadataMap.get("items updated in lookback window") || "";
+      const comments = metadataMap.get("comments created in lookback window") || "—";
+      const modelName = aiProvider.includes(" - ")
+        ? aiProvider.split(" - ").slice(1).join(" - ")
+        : aiProvider;
+      const itemsDisplay = updatedItems ? `${updatedItems} / ${totalItems}` : totalItems;
+      const generatedDisplay = generated ? formatGeneratedDate(generated) : "—";
+
+      return `<tr class="reports-table-row" data-report-id="${escapeHtml(report.id)}" tabindex="0">
+        <td class="col-num">${report.order}</td>
+        <td class="col-project">${escapeHtml(projectName)}</td>
+        <td class="col-generated">${escapeHtml(generatedDisplay)}</td>
+        <td class="col-model">${escapeHtml(modelName)}</td>
+        <td class="col-items">${escapeHtml(itemsDisplay)}</td>
+        <td class="col-comments">${escapeHtml(comments)}</td>
+      </tr>`;
+    })
+    .join("");
+
+  tbody.querySelectorAll(".reports-table-row").forEach((row) => {
+    row.addEventListener("click", () => {
+      window.location.hash = `#report/${row.dataset.reportId}`;
+    });
+    row.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        window.location.hash = `#report/${row.dataset.reportId}`;
+      }
+    });
+  });
+}
+
+function renderActiveReport() {
+  const container = byId("reports-list");
+  if (!container) return;
+
+  const report = state.reports.find((r) => r.id === state.activeReportId);
+  if (!report) return;
+
+  const orderedMetadata = [...report.metadata].sort(
     (a, b) =>
       (REPORT_METADATA_ORDER.get(a.label.toLowerCase()) ?? Number.MAX_SAFE_INTEGER) -
       (REPORT_METADATA_ORDER.get(b.label.toLowerCase()) ?? Number.MAX_SAFE_INTEGER)
@@ -255,7 +295,7 @@ function renderActiveReport() {
                   }</strong>`
                 : ""
             }
-            <div class="report-file">${escapeHtml(activeReport.filename)}</div>
+            <div class="report-file">${escapeHtml(report.filename)}</div>
           </div>
           <ul class="report-inline-stats" aria-label="Report activity metrics">
             ${generatedPart ? `<li class="stats-context">${generatedPart}</li>` : ""}
@@ -303,7 +343,7 @@ function renderActiveReport() {
     </article>
   `;
 
-  byId("report-render").innerHTML = renderMarkdown(activeReport.markdown);
+  byId("report-render").innerHTML = renderMarkdown(report.markdown);
 
   const copyButton = byId("report-copy-btn");
   const downloadButton = byId("report-download-btn");
@@ -312,7 +352,7 @@ function renderActiveReport() {
     if (copyButton.dataset.busy === "true") return;
     copyButton.dataset.busy = "true";
     try {
-      await navigator.clipboard.writeText(activeReport.markdown);
+      await navigator.clipboard.writeText(report.markdown);
       copyButton.classList.remove("is-error");
       copyButton.classList.add("is-copied");
       copyButton.setAttribute("aria-label", "Copied");
@@ -338,8 +378,28 @@ function renderActiveReport() {
   });
 
   downloadButton.addEventListener("click", () => {
-    downloadMarkdown(activeReport.filename, activeReport.markdown);
+    downloadMarkdown(report.filename, report.markdown);
   });
+}
+
+function handleHashChange() {
+  const reportId = parseReportHash();
+  if (reportId) {
+    const report = state.reports.find((r) => r.id === reportId);
+    if (report) {
+      state.activeReportId = reportId;
+      selectTab("reports");
+      showDetailView();
+      renderActiveReport();
+    } else {
+      history.pushState(null, "", window.location.pathname);
+      showTableView();
+      renderReportTable();
+    }
+  } else {
+    showTableView();
+    renderReportTable();
+  }
 }
 
 export function addReportTab(filename, markdown) {
@@ -348,19 +408,34 @@ export function addReportTab(filename, markdown) {
   const id = `report-${state.reportCounter}`;
   state.reports.push({ id, order: state.reportCounter, filename, markdown: bodyMarkdown, metadata });
   state.activeReportId = id;
-  renderReportPicker();
-  renderActiveReport();
-
   selectTab("reports");
+  history.pushState(null, "", `#report/${id}`);
+  showDetailView();
+  renderActiveReport();
 }
 
-export function initReportPicker() {
-  const picker = byId("report-picker");
-  if (!picker) return;
-  picker.addEventListener("change", (event) => {
-    state.activeReportId = event.target.value;
-    renderActiveReport();
-  });
-  renderReportPicker();
-  renderActiveReport();
+export function initReports() {
+  window.addEventListener("hashchange", handleHashChange);
+
+  const backBtn = byId("reports-back-btn");
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      history.pushState(null, "", window.location.pathname);
+      showTableView();
+      renderReportTable();
+    });
+  }
+
+  const reportsTabBtn = byId("tab-trigger-reports");
+  if (reportsTabBtn) {
+    reportsTabBtn.addEventListener("click", () => {
+      if (window.location.hash.startsWith("#report/")) {
+        history.pushState(null, "", window.location.pathname);
+      }
+      showTableView();
+      renderReportTable();
+    });
+  }
+
+  handleHashChange();
 }

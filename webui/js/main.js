@@ -1,5 +1,5 @@
 import { loadConfig, updateModelDropdown, buildRunPayload } from "./config.js";
-import { addReportTab, initReportPicker, selectTab } from "./reports.js";
+import { addReportTab, initReports, selectTab } from "./reports.js";
 import {
   findInProgressStep,
   initProgress,
@@ -261,7 +261,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (!btn) return;
     selectTab(btn.dataset.tab);
   });
-  initReportPicker();
+  initReports();
 
   try {
     await loadConfig();

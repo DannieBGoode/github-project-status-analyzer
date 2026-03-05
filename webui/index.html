@@ -136,20 +136,36 @@
         aria-labelledby="tab-trigger-reports"
         aria-hidden="true"
       >
-        <div id="reports-controls" class="card reports-controls hidden">
-          <label for="report-picker">
-            <span>Select Report</span>
-            <select id="report-picker" aria-label="Select report to view"></select>
-          </label>
+        <div id="reports-table-view">
+          <div id="reports-empty" class="card reports-empty">
+            <h2>No Reports Yet</h2>
+            <p>
+              Run your first report from the Generator tab. Generated reports will appear here
+              automatically.
+            </p>
+          </div>
+          <div id="reports-table-card" class="card reports-table-card hidden">
+            <table class="reports-table" id="reports-table" aria-label="Generated reports">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Project</th>
+                  <th scope="col">Generated</th>
+                  <th scope="col">AI Model</th>
+                  <th scope="col">Items</th>
+                  <th scope="col">Comments</th>
+                </tr>
+              </thead>
+              <tbody id="reports-table-body"></tbody>
+            </table>
+          </div>
         </div>
-        <div id="reports-empty" class="card reports-empty">
-          <h2>No Reports Yet</h2>
-          <p>
-            Run your first report from the Generator tab. Generated reports will appear here
-            automatically.
-          </p>
+        <div id="reports-detail-view" class="hidden">
+          <div class="reports-detail-nav">
+            <button id="reports-back-btn" type="button" class="reports-back-btn secondary">&#8592; All Reports</button>
+          </div>
+          <section id="reports-list" class="reports-list"></section>
         </div>
-        <section id="reports-list" class="reports-list"></section>
       </section>
 
       <section id="tab-settings" class="tab-panel" aria-hidden="true">
