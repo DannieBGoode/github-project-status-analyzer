@@ -9,10 +9,10 @@ The script in `src/gitHubAISummary.py` automates a simple reporting workflow:
 1. Resolves your target project:
    - uses `PROJECT_ID` directly if provided, or
    - auto-resolves from `PROJECT_URL`.
-2. Calls the GitHub GraphQL API to read up to 40 items from a GitHub Project V2 board.
+2. Calls the GitHub GraphQL API to read up to `MAX_ITEMS` items from a GitHub Project V2 board (default: 40, maximum: 100).
 3. Extracts issue/PR content and the project `Status` field.
 4. Sends the raw JSON payload to your selected AI provider (`gemini` or `openai`) with a reporting prompt.
-5. Prints an executive summary with sections for:
+5. Generates an executive summary with sections for:
    - Key achievements
    - Risks
    - Issues/blockers
@@ -26,10 +26,16 @@ Current implementation is a prototype with TODOs for:
 
 ## Repository Structure
 
-- `src/gitHubAISummary.py`: main script and orchestration logic.
-- `src/README.md`: source-level notes.
-- `requirements.txt`: Python dependencies.
-- `config.example.py`: template for required secrets/config values.
+- `src/` — Python source modules: entry point, pipeline orchestration, GitHub GraphQL client, AI provider integrations, report formatting, and output writing.
+- `src/gitHubAISummary.py` — CLI entry point.
+- `src/README.md` — source-level notes.
+- `web_ui.py` — Flask web server for the local web UI.
+- `webui/` — Web UI static assets (HTML, CSS, JavaScript).
+- `tests/` — Python and JavaScript unit tests.
+- `run_tests.py` — unified test runner (runs both suites).
+- `reports/` — generated report output directory (created on first run).
+- `requirements.txt` — Python dependencies.
+- `config.example.py` — template for required secrets and config values.
 
 ## Prerequisites
 
@@ -52,6 +58,9 @@ pip install -r requirements.txt
 3. Create `config.py` in the project root by copying from the example:
 
 ```bash
+# Linux/macOS
+cp config.example.py config.py
+# Windows
 copy config.example.py config.py
 ```
 
@@ -72,6 +81,15 @@ If `AI_PROVIDER = "gemini"`:
 If `AI_PROVIDER = "openai"`:
 - `OPENAI_API_KEY`
 - optional `OPENAI_MODEL`
+
+Optional tuning values (with defaults from `config.example.py`):
+- `LOOKBACK_DAYS` — report window in days (default: `14`)
+- `MAX_ITEMS` — items fetched from the project board (default: `40`, maximum: `100`)
+- `MAX_COMMENTS_PER_ITEM` — comments included per item (default: `20`)
+- `AI_TIMEOUT_SECONDS` — per-request read timeout for AI calls (default: `120`)
+- `AI_MAX_RETRIES` — retry attempts on timeout (default: `1`)
+- `REPORT_TIMEZONE` — IANA timezone for report timestamps, e.g. `"America/New_York"`
+- `REPORT_TIMEZONE_LABEL` — label appended to timestamps, e.g. `"ET"`
 
 ## Where To Get Keys And IDs
 
@@ -147,15 +165,16 @@ http://127.0.0.1:5000
 ```
 
 Capabilities:
-- switch AI provider/model from the UI,
+- switch AI provider and model from the UI,
 - edit runtime variables before execution,
-- show loading state while report is being generated,
-- download generated markdown file directly from browser.
+- stream live progress output while the report is being generated,
+- browse and view previously generated reports in a Reports tab,
+- download any report as a Markdown file directly from the browser.
 
 ## How Data Is Queried
 
 The GitHub GraphQL query fetches:
-- project items (`first: 40`),
+- project items (count controlled by `MAX_ITEMS`, default: 40),
 - project name and URL,
 - issue/PR number, title, body, state, URL, created/updated timestamps,
 - issue/PR comment/review counts,
@@ -188,7 +207,5 @@ Not currently queried:
 ## Suggested Next Improvements
 
 - Add schema-safe parsing and AI-response validation.
-- Add retries/backoff policies for API calls.
 - Add CLI arguments (project URL/ID, item limit, output format).
-- Add unit tests with mocked GitHub/AI API responses.
-- Add optional outputs: markdown file, Slack webhook, Google Docs.
+- Add optional outputs: Slack webhook, Google Docs.
