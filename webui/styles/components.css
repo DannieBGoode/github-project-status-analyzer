@@ -406,6 +406,41 @@ button.ghost:active:not(:disabled) {
   font-size: 0.79rem;
 }
 
+.url-bar {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid color-mix(in oklch, var(--line) 87%, white 13%);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: color-mix(in oklch, white 92%, var(--surface-soft) 8%);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.url-bar:focus-within {
+  border-color: color-mix(in oklch, var(--accent) 55%, var(--line-strong) 45%);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent-soft) 82%, white 18%);
+}
+
+.url-bar input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.url-bar input:focus {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.url-bar button {
+  border-radius: 0;
+  flex-shrink: 0;
+}
+
 @media (max-width: 860px) {
   .grid.two {
     grid-template-columns: 1fr;

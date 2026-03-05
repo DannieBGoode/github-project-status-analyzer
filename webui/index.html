@@ -55,7 +55,7 @@
           aria-selected="false"
           aria-controls="tab-reports"
         >
-          Reports
+          Reports<span id="reports-count-badge" class="reports-badge hidden"></span>
         </button>
         <span class="tabs-spacer"></span>
       </nav>
@@ -63,11 +63,14 @@
       <section id="tab-generator" class="tab-panel active" role="tabpanel" aria-labelledby="tab-trigger-generator">
         <div class="card">
           <form id="report-form">
-            <div class="grid one">
-              <label>
-                <span>Project Board URL</span>
-                <input id="project_url" type="text" placeholder="https://github.com/orgs/…/projects/…" />
-              </label>
+            <div class="url-bar">
+              <input
+                id="project_url"
+                type="text"
+                placeholder="https://github.com/orgs/…/projects/…"
+                aria-label="Project Board URL"
+              />
+              <button id="run-btn" type="button" class="primary">Run Report</button>
             </div>
             <details class="advanced-controls">
               <summary>Advanced Controls</summary>
@@ -103,9 +106,6 @@
                 </div>
               </div>
             </details>
-            <div class="actions">
-              <button id="run-btn" type="button" class="primary">Run Report</button>
-            </div>
           </form>
         </div>
       </section>

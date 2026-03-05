@@ -382,6 +382,18 @@ function renderActiveReport() {
   });
 }
 
+function updateReportsBadge() {
+  const badge = byId("reports-count-badge");
+  if (!badge) return;
+  const count = state.reports.length;
+  if (count === 0) {
+    badge.classList.add("hidden");
+  } else {
+    badge.textContent = count;
+    badge.classList.remove("hidden");
+  }
+}
+
 function handleHashChange() {
   const reportId = parseReportHash();
   if (reportId) {
@@ -408,6 +420,7 @@ export function addReportTab(filename, markdown) {
   const id = `report-${state.reportCounter}`;
   state.reports.push({ id, order: state.reportCounter, filename, markdown: bodyMarkdown, metadata });
   state.activeReportId = id;
+  updateReportsBadge();
   selectTab("reports");
   history.pushState(null, "", `#report/${id}`);
   showDetailView();
@@ -437,5 +450,6 @@ export function initReports() {
     });
   }
 
+  updateReportsBadge();
   handleHashChange();
 }

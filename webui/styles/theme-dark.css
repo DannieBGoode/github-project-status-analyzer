@@ -1,4 +1,13 @@
 body[data-theme="dark"] {
+  /* Override core tokens so every color-mix() formula using them works correctly in dark mode */
+  --ink: oklch(0.93 0.015 160);
+  --muted: oklch(0.72 0.022 158);
+  --surface: oklch(0.20 0.014 155);
+  --surface-soft: oklch(0.22 0.013 154);
+  --line: oklch(0.34 0.022 152);
+  --line-strong: oklch(0.44 0.032 154);
+  --accent-soft: oklch(0.27 0.04 162);
+
   color: oklch(0.93 0.015 160);
   background:
     radial-gradient(circle at 8% -18%, oklch(0.28 0.06 165 / 0.45), transparent 44%),
@@ -284,4 +293,36 @@ body[data-theme="dark"] .progress-error {
 
 body[data-theme="dark"] .markdown-render a {
   color: oklch(0.82 0.14 230);
+}
+
+body[data-theme="dark"] .url-bar {
+  background: oklch(0.22 0.015 160 / 0.95);
+  border-color: oklch(0.41 0.025 162 / 0.85);
+}
+
+body[data-theme="dark"] .url-bar:focus-within {
+  background: oklch(0.24 0.017 160 / 0.98);
+}
+
+body[data-theme="dark"] .url-bar input {
+  background: transparent;
+  border: none;
+}
+
+body[data-theme="dark"] .url-bar input:focus {
+  background: transparent;
+}
+
+body[data-theme="dark"] .advanced-controls summary::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a8c0b0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+/* Table: hover uses color-mix(..., white 64%) which still produces a light bg regardless of token overrides.
+   Override explicitly so light ink text is readable on a dark accent-tinted row. */
+body[data-theme="dark"] .reports-table-row:hover {
+  background: oklch(0.27 0.05 162 / 0.55);
+}
+
+body[data-theme="dark"] .reports-table-row:focus-visible {
+  outline-color: oklch(0.62 0.12 160 / 0.8);
 }
