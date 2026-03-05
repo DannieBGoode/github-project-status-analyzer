@@ -10,7 +10,7 @@ const CALENDAR_ICON = `
 
 const MODEL_ICON = `
 <svg class="inline-icon" aria-hidden="true" viewBox="0 0 16 16" focusable="false">
-  <path d="M3 3.5h10M3 8h10M3 12.5h10M5.25 3.5v9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+  <path d="M8 1.5 9.2 6.8 14.5 8 9.2 9.2 8 14.5 6.8 9.2 1.5 8 6.8 6.8Z" fill="currentColor" opacity="0.85"></path>
 </svg>`;
 
 const FETCHED_ICON = `
@@ -138,6 +138,16 @@ export function selectTab(tabId) {
   });
 }
 
+function formatGeneratedDate(raw) {
+  const match = raw.match(/^(\d{4})-([A-Za-z]+)-(\d{2})\s+(\d{2}):(\d{2})/);
+  if (!match) return raw;
+  const [, year, mon, day, h, min] = match;
+  const hour = parseInt(h, 10);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const hour12 = hour % 12 || 12;
+  return `${mon} ${parseInt(day, 10)}, ${year} · ${hour12}:${min} ${ampm}`;
+}
+
 function downloadMarkdown(filename, markdown) {
   const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -205,25 +215,28 @@ function renderActiveReport() {
   const updatedItemsEntry = metadataMap.get("items updated in lookback window");
   const newCommentsEntry = metadataMap.get("comments created in lookback window");
   const generatedPart = generatedEntry
-    ? `<span class="meta-part">${CALENDAR_ICON}<span>${escapeHtml(generatedEntry.value)}</span></span>`
+    ? `<span class="meta-part">${CALENDAR_ICON}<span>${escapeHtml(formatGeneratedDate(generatedEntry.value))}</span></span>`
+    : "";
+  const modelName = providerEntry
+    ? (providerEntry.value.includes(" - ")
+        ? providerEntry.value.split(" - ").slice(1).join(" - ")
+        : providerEntry.value)
     : "";
   const providerPart = providerEntry
-    ? `<span class="meta-part meta-model">${MODEL_ICON}<span>${escapeHtml(providerEntry.value)}</span></span>`
+    ? `<span class="meta-part meta-model">${MODEL_ICON}<span>${escapeHtml(modelName)}</span></span>`
     : "";
   let fetchedUpdatedPart = "";
   if (totalItemsEntry || updatedItemsEntry) {
-    const fetchedValue = totalItemsEntry ? `<strong>${escapeHtml(totalItemsEntry.value)}</strong>` : "-";
-    const updatedValue = updatedItemsEntry
-      ? `<span class="stats-updated">Updated <strong>${escapeHtml(updatedItemsEntry.value)}</strong></span>`
-      : "";
-    fetchedUpdatedPart = `<span class="stats-segment">${FETCHED_ICON}Fetched ${fetchedValue}${
-      updatedValue ? `<span class="meta-sep" aria-hidden="true">/</span>${updatedValue}` : ""
-    }</span>`;
+    if (updatedItemsEntry && totalItemsEntry) {
+      fetchedUpdatedPart = `<span class="stats-segment">${FETCHED_ICON}<strong>${escapeHtml(updatedItemsEntry.value)}</strong><span class="meta-sep" aria-hidden="true">/</span>${escapeHtml(totalItemsEntry.value)} updates</span>`;
+    } else if (totalItemsEntry) {
+      fetchedUpdatedPart = `<span class="stats-segment">${FETCHED_ICON}<strong>${escapeHtml(totalItemsEntry.value)}</strong> fetched</span>`;
+    } else {
+      fetchedUpdatedPart = `<span class="stats-segment">${FETCHED_ICON}<strong>${escapeHtml(updatedItemsEntry.value)}</strong> updated</span>`;
+    }
   }
   const commentsPart = newCommentsEntry
-    ? `<span class="stats-segment">${COMMENTS_ICON}Comments: <strong class="stats-comments">${escapeHtml(
-        newCommentsEntry.value
-      )}</strong></span>`
+    ? `<span class="stats-segment">${COMMENTS_ICON}<strong class="stats-comments">${escapeHtml(newCommentsEntry.value)}</strong> new comments</span>`
     : "";
 
   container.innerHTML = `
@@ -250,30 +263,41 @@ function renderActiveReport() {
             ${providerPart ? `<li class="stats-context-model">${providerPart}</li>` : ""}
             ${commentsPart ? `<li class="stats-summary-comments">${commentsPart}</li>` : ""}
           </ul>
-          <div class="report-actions-inline">
-            <button type="button" class="primary report-download-btn" id="report-download-btn">Download .md</button>
-          </div>
         </div>
       </div>
       <div class="markdown-shell">
-        <button
-          type="button"
-          class="markdown-copy-btn"
-          id="report-copy-btn"
-          aria-label="Copy markdown report"
-          title="Copy markdown report"
-        >
-          <svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16" focusable="false">
-            <path
-              fill="currentColor"
-              d="M0 6.75C0 5.78.78 5 1.75 5h5.5C8.22 5 9 5.78 9 6.75v7.5C9 15.22 8.22 16 7.25 16h-5.5A1.75 1.75 0 0 1 0 14.25v-7.5Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h5.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25h-5.5Z"
-            ></path>
-            <path
-              fill="currentColor"
-              d="M10.75 0A1.75 1.75 0 0 1 12.5 1.75v7.5A1.75 1.75 0 0 1 10.75 11h-.5V9.5h.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25h-5.5a.25.25 0 0 0-.25.25v.5H3.5v-.5A1.75 1.75 0 0 1 5.25 0h5.5Z"
-            ></path>
-          </svg>
-        </button>
+        <div class="markdown-actions">
+          <button
+            type="button"
+            class="markdown-copy-btn"
+            id="report-copy-btn"
+            aria-label="Copy markdown report"
+            title="Copy markdown report"
+          >
+            <svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16" focusable="false">
+              <path
+                fill="currentColor"
+                d="M0 6.75C0 5.78.78 5 1.75 5h5.5C8.22 5 9 5.78 9 6.75v7.5C9 15.22 8.22 16 7.25 16h-5.5A1.75 1.75 0 0 1 0 14.25v-7.5Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h5.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25h-5.5Z"
+              ></path>
+              <path
+                fill="currentColor"
+                d="M10.75 0A1.75 1.75 0 0 1 12.5 1.75v7.5A1.75 1.75 0 0 1 10.75 11h-.5V9.5h.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25h-5.5a.25.25 0 0 0-.25.25v.5H3.5v-.5A1.75 1.75 0 0 1 5.25 0h5.5Z"
+              ></path>
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="markdown-download-btn"
+            id="report-download-btn"
+            aria-label="Download .md"
+            title="Download .md"
+          >
+            <svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16" focusable="false">
+              <path fill="currentColor" d="M7.47 10.78a.75.75 0 0 0 1.06 0l3.75-3.75a.75.75 0 0 0-1.06-1.06L8.75 8.44V1.75a.75.75 0 0 0-1.5 0v6.69L4.78 5.97a.75.75 0 0 0-1.06 1.06l3.75 3.75Z"></path>
+              <path fill="currentColor" d="M1.75 13.5a.75.75 0 0 0 0 1.5h12.5a.75.75 0 0 0 0-1.5H1.75Z"></path>
+            </svg>
+          </button>
+        </div>
         <div class="markdown-render" id="report-render"></div>
       </div>
     </article>

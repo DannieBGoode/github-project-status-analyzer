@@ -135,6 +135,21 @@ export function updateProgress(stepId, status, message, errorText = "") {
     e.textContent = p.error;
     item.appendChild(e);
   }
+
+  if (status === "completed") {
+    const allDone = progressSteps.every((step) => {
+      const s = state.progress[step.id];
+      return s && s.status === "completed";
+    });
+    if (allDone) {
+      const panel = byId("loading-panel");
+      if (panel) {
+        panel.classList.remove("all-done");
+        void panel.offsetWidth;
+        panel.classList.add("all-done");
+      }
+    }
+  }
 }
 
 export function findInProgressStep() {

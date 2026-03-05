@@ -37,6 +37,48 @@
   }
 }
 
+@keyframes check-pop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  55%  { transform: scale(1.18); opacity: 1; }
+  75%  { transform: scale(0.93); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes panel-success-glow {
+  0%   { box-shadow: 0 34px 45px -30px oklch(0.28 0.04 160 / 0.42); }
+  40%  { box-shadow: 0 0 0 4px oklch(0.72 0.15 150 / 0.38), 0 34px 45px -30px oklch(0.28 0.04 160 / 0.42); }
+  100% { box-shadow: 0 34px 45px -30px oklch(0.28 0.04 160 / 0.42); }
+}
+
+@keyframes step-enter {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes copy-bounce {
+  0%   { transform: scale(1); }
+  28%  { transform: scale(0.84); }
+  62%  { transform: scale(1.1); }
+  82%  { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+
+@keyframes btn-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes report-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

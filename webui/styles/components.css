@@ -331,6 +331,20 @@ button.primary {
   box-shadow: 0 14px 20px -16px oklch(0.43 0.12 162 / 0.9);
 }
 
+button.primary:not(:disabled) {
+  background:
+    linear-gradient(
+      100deg,
+      transparent 20%,
+      oklch(1 0 0 / 0.2) 40%,
+      oklch(1 0 0 / 0.2) 50%,
+      transparent 70%
+    ),
+    linear-gradient(155deg, var(--accent), color-mix(in oklch, var(--accent-strong) 68%, var(--accent) 32%));
+  background-size: 200% 100%, 100% 100%;
+  animation: btn-shimmer 3.8s ease-in-out infinite;
+}
+
 button.primary:hover:not(:disabled) {
   transform: translateY(-1px);
 }
