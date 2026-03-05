@@ -1,0 +1,10 @@
+[run]
+source = src, web_ui
+omit =
+    tests/*
+    config.py
+    config.example.py
+
+[report]
+show_missing = true
+skip_covered = false
