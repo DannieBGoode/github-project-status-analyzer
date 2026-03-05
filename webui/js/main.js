@@ -1,13 +1,24 @@
 import { loadConfig, updateModelDropdown, buildRunPayload } from "./config.js";
-import { addReportTab, initReports, selectTab } from "./reports.js";
+import {
+  startReport,
+  completeReport,
+  failReport,
+  navigateToReport,
+  initReports,
+  selectTab,
+} from "./reports.js";
 import {
   findInProgressStep,
   initProgress,
+  minimizeProgress,
+  expandProgress,
   setLoading,
   stopProgressTimer,
   updateProgress,
 } from "./progress.js";
 import { byId } from "./utils.js";
+
+let pendingReportId = null;
 
 const THEME_STORAGE_KEY = "webui-theme";
 const THEME_ICON_SUN = `
@@ -148,6 +159,8 @@ async function runReport(event) {
 
   try {
     const payload = buildRunPayload();
+    pendingReportId = startReport(payload);
+
     let res = await fetch("/api/run-stream", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -172,7 +185,7 @@ async function runReport(event) {
       updateProgress("ai_send", "completed", "Items sent successfully.");
       updateProgress("ai_wait", "completed", "AI response received.");
       updateProgress("markdown_build", "completed", "Markdown report built.");
-      addReportTab(data.filename || "report.md", data.markdown || "");
+      completeReport(pendingReportId, data.filename || "report.md", data.markdown || "");
       playSuccessChime();
       return;
     }
@@ -197,7 +210,7 @@ async function runReport(event) {
           updateProgress(msg.step.step_id, msg.step.status, msg.step.message || "");
         } else if (msg.type === "result" && msg.data) {
           completed = true;
-          addReportTab(msg.data.filename || "report.md", msg.data.markdown || "");
+          completeReport(pendingReportId, msg.data.filename || "report.md", msg.data.markdown || "");
           playSuccessChime();
         } else if (msg.type === "error") {
           const failedStep = findInProgressStep() || "ai_wait";
@@ -217,14 +230,16 @@ async function runReport(event) {
     hasError = true;
     const failedStep = findInProgressStep() || "ai_wait";
     updateProgress(failedStep, "failed", "Failed", err.message);
+    if (pendingReportId) failReport(pendingReportId);
     playErrorChime();
   } finally {
     stopProgressTimer();
+    byId("run-btn").disabled = false;
     if (hasError) {
       byId("loading-close").classList.remove("hidden");
-      byId("run-btn").disabled = false;
     } else {
-      setLoading(false);
+      byId("loading-go-to-report").classList.remove("hidden");
+      byId("loading-close").classList.remove("hidden");
     }
   }
 }
@@ -235,6 +250,16 @@ window.addEventListener("DOMContentLoaded", async () => {
   byId("report-form").addEventListener("submit", (e) => e.preventDefault());
   byId("run-btn").addEventListener("click", runReport);
   byId("loading-close").addEventListener("click", () => setLoading(false));
+  byId("loading-minimize").addEventListener("click", minimizeProgress);
+  byId("progress-fab-expand").addEventListener("click", expandProgress);
+  byId("progress-fab-dismiss").addEventListener("click", () => setLoading(false));
+  byId("loading-go-to-report").addEventListener("click", () => {
+    if (!pendingReportId) return;
+    const id = pendingReportId;
+    pendingReportId = null;
+    setLoading(false);
+    navigateToReport(id);
+  });
   byId("theme-toggle").addEventListener("click", () => {
     const current = document.body.getAttribute("data-theme") === "dark" ? "dark" : "light";
     const next = current === "dark" ? "light" : "dark";

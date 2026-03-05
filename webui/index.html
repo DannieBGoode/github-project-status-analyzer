@@ -129,6 +129,7 @@
             <table class="reports-table" id="reports-table" aria-label="Generated reports">
               <thead>
                 <tr>
+                  <th scope="col" class="col-status-head"></th>
                   <th scope="col">#</th>
                   <th scope="col">Project</th>
                   <th scope="col">Generated</th>
@@ -196,12 +197,45 @@
               Tracking pipeline status in real time while the report is assembled.
             </p>
           </div>
+          <button
+            id="loading-minimize"
+            type="button"
+            class="loading-minimize-btn"
+            aria-label="Minimize"
+            title="Minimize"
+          >
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <polyline points="4 6 8 10 12 6" />
+            </svg>
+          </button>
         </div>
         <ul id="progress-list" class="progress-list"></ul>
         <div class="loading-actions">
           <button id="loading-close" type="button" class="secondary hidden">Close</button>
+          <button id="loading-go-to-report" type="button" class="primary hidden">Go To Report →</button>
         </div>
       </div>
+    </div>
+
+    <div id="progress-fab" class="progress-fab hidden">
+      <button
+        id="progress-fab-expand"
+        type="button"
+        class="progress-fab-btn"
+        aria-label="Show progress"
+        title="Show progress"
+      ></button>
+      <button
+        id="progress-fab-dismiss"
+        type="button"
+        class="progress-fab-dismiss hidden"
+        aria-label="Dismiss"
+        title="Dismiss"
+      >
+        <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false">
+          <line x1="2" y1="2" x2="8" y2="8" /><line x1="8" y1="2" x2="2" y2="8" />
+        </svg>
+      </button>
     </div>
 
     <script type="module" src="/js/main.js?v=20260304-6"></script>

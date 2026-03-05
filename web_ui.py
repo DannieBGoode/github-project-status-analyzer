@@ -1,3 +1,4 @@
+import re
 import sys
 import json
 import queue
@@ -26,6 +27,16 @@ BASE_DIR = Path(__file__).resolve().parent
 WEBUI_DIR = BASE_DIR / "webui"
 
 app = Flask(__name__, static_folder=str(WEBUI_DIR), static_url_path="")
+
+def redact_error(exc):
+    """Remove API keys and tokens from exception messages before surfacing to UI."""
+    msg = str(exc)
+    # Redact ?key=... or &key=... query params (e.g. Gemini API key in URL)
+    msg = re.sub(r'([?&]key=)[^&\s\'"]+', r'\1***', msg)
+    # Redact Bearer / token header values that may appear in repr
+    msg = re.sub(r'(Bearer\s+)[A-Za-z0-9\-._~+/]+=*', r'\1***', msg)
+    return msg
+
 
 def mask_secret(value):
     if not value:
@@ -150,7 +161,7 @@ def run_report():
             save_report=False,
         )
     except Exception as exc:
-        return jsonify({"ok": False, "error": str(exc)}), 400
+        return jsonify({"ok": False, "error": redact_error(exc)}), 400
 
     filename = f"report-{datetime.now().strftime('%Y%m%d-%H%M%S')}.md"
     return jsonify(
@@ -194,7 +205,7 @@ def run_report_stream():
                 },
             )
         except Exception as exc:
-            push_event("error", error=str(exc))
+            push_event("error", error=redact_error(exc))
         finally:
             push_event("done")
 

@@ -2,7 +2,12 @@ import { progressSteps } from "./constants.js";
 import { state } from "./state.js";
 import { byId, formatDuration } from "./utils.js";
 
+const FAB_CHECK_SVG = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+const FAB_ERROR_SVG = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><rect x="10.5" y="4" width="3" height="11" rx="1.5"/><circle cx="12" cy="20" r="1.75"/></svg>`;
+
 const STEP_STATUSES = ["pending", "in_progress", "completed", "failed"];
+
+let lastFabStatus = "in_progress";
 
 function createDefaultStepState() {
   return {
@@ -47,12 +52,35 @@ export function setLoading(isLoading) {
   const loading = byId("loading");
   const loadingPanel = byId("loading-panel");
   loading.classList.toggle("hidden", !isLoading);
+  loading.classList.remove("minimized");
   loading.setAttribute("aria-hidden", String(!isLoading));
   byId("run-btn").disabled = isLoading;
   byId("loading-close").classList.add("hidden");
   byId("loading-close").disabled = !isLoading;
 
+  if (!isLoading) {
+    const fab = byId("progress-fab");
+    if (fab) {
+      fab.classList.add("hidden");
+      fab.classList.remove("is-active", "is-success", "is-error");
+      const dismiss = byId("progress-fab-dismiss");
+      if (dismiss) dismiss.classList.add("hidden");
+    }
+    const goToReport = byId("loading-go-to-report");
+    if (goToReport) goToReport.classList.add("hidden");
+    const minimizeBtn = byId("loading-minimize");
+    if (minimizeBtn) minimizeBtn.classList.remove("hidden");
+  }
+
   if (isLoading) {
+    const fab = byId("progress-fab");
+    if (fab) {
+      fab.classList.add("hidden");
+      fab.classList.remove("is-active", "is-success", "is-error");
+      const dismiss = byId("progress-fab-dismiss");
+      if (dismiss) dismiss.classList.add("hidden");
+    }
+    lastFabStatus = "in_progress";
     state.lastFocusedElement = document.activeElement;
     if (loadingPanel) loadingPanel.focus();
   } else if (
@@ -62,6 +90,81 @@ export function setLoading(isLoading) {
     state.lastFocusedElement.focus();
     state.lastFocusedElement = null;
   }
+}
+
+export function minimizeProgress() {
+  const loading = byId("loading");
+  const fab = byId("progress-fab");
+  if (!loading || !fab) return;
+  loading.classList.add("minimized");
+  fab.classList.remove("hidden");
+  updateFabState(lastFabStatus);
+}
+
+export function expandProgress() {
+  const loading = byId("loading");
+  const fab = byId("progress-fab");
+  const loadingPanel = byId("loading-panel");
+  if (!loading || !fab) return;
+  loading.classList.remove("minimized");
+  fab.classList.add("hidden");
+  if (loadingPanel) loadingPanel.focus();
+}
+
+export function updateFabState(status) {
+  lastFabStatus = status;
+  const fab = byId("progress-fab");
+  const expandBtn = byId("progress-fab-expand");
+  const dismissBtn = byId("progress-fab-dismiss");
+  if (!fab || !expandBtn) return;
+
+  fab.classList.remove("is-active", "is-success", "is-error");
+
+  if (status === "in_progress") {
+    fab.classList.add("is-active");
+    expandBtn.innerHTML = "";
+    expandBtn.setAttribute("aria-label", "Show progress");
+    if (dismissBtn) dismissBtn.classList.add("hidden");
+  } else if (status === "completed") {
+    fab.classList.add("is-success");
+    expandBtn.innerHTML = FAB_CHECK_SVG;
+    expandBtn.setAttribute("aria-label", "Show completed report");
+    if (dismissBtn) dismissBtn.classList.remove("hidden");
+  } else if (status === "failed") {
+    fab.classList.add("is-error");
+    expandBtn.innerHTML = FAB_ERROR_SVG;
+    expandBtn.setAttribute("aria-label", "Show error details");
+    if (dismissBtn) dismissBtn.classList.remove("hidden");
+  }
+}
+
+export function showProgressSnapshot(htmlSnapshot) {
+  const loading = byId("loading");
+  const loadingPanel = byId("loading-panel");
+  const progressList = byId("progress-list");
+  const minimizeBtn = byId("loading-minimize");
+  const closeBtn = byId("loading-close");
+  const goToReportBtn = byId("loading-go-to-report");
+
+  if (progressList) progressList.innerHTML = htmlSnapshot || "";
+  if (minimizeBtn) minimizeBtn.classList.add("hidden");
+  if (goToReportBtn) goToReportBtn.classList.add("hidden");
+  if (closeBtn) {
+    closeBtn.classList.remove("hidden");
+    closeBtn.disabled = false;
+  }
+
+  if (loading) {
+    loading.classList.remove("hidden");
+    loading.classList.remove("minimized");
+    loading.setAttribute("aria-hidden", "false");
+  }
+
+  const fab = byId("progress-fab");
+  if (fab) fab.classList.add("hidden");
+
+  state.lastFocusedElement = document.activeElement;
+  if (loadingPanel) loadingPanel.focus();
 }
 
 function ensureProgressTimer() {
@@ -148,7 +251,12 @@ export function updateProgress(stepId, status, message, errorText = "") {
         void panel.offsetWidth;
         panel.classList.add("all-done");
       }
+      updateFabState("completed");
     }
+  }
+
+  if (status === "failed") {
+    updateFabState("failed");
   }
 }
 

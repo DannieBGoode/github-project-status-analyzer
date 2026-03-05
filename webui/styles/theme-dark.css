@@ -295,6 +295,52 @@ body[data-theme="dark"] .markdown-render a {
   color: oklch(0.82 0.14 230);
 }
 
+body[data-theme="dark"] .loading-minimize-btn {
+  border-color: oklch(0.45 0.03 162 / 0.9);
+  background: oklch(0.26 0.02 162 / 0.7);
+  color: oklch(0.74 0.015 160);
+}
+
+body[data-theme="dark"] .loading-minimize-btn:hover {
+  background: oklch(0.31 0.035 165 / 0.9);
+  border-color: oklch(0.58 0.06 166 / 0.9);
+  color: oklch(0.92 0.015 160);
+}
+
+body[data-theme="dark"] .progress-fab-btn {
+  background: oklch(0.22 0.018 162 / 0.92);
+  border-color: oklch(0.43 0.03 162 / 0.9);
+  color: oklch(0.72 0.018 160);
+  box-shadow: 0 4px 18px -6px oklch(0.02 0.01 160 / 0.88);
+}
+
+body[data-theme="dark"] .progress-fab.is-active .progress-fab-btn {
+  background: oklch(0.2 0.04 240 / 0.8);
+  border-color: oklch(0.5 0.05 245 / 0.35);
+  border-top-color: oklch(0.72 0.1 245 / 0.95);
+  color: oklch(0.8 0.08 245);
+}
+
+body[data-theme="dark"] .progress-fab.is-success .progress-fab-btn {
+  background: oklch(0.62 0.15 150 / 0.92);
+  border-color: oklch(0.72 0.15 150 / 0.7);
+}
+
+body[data-theme="dark"] .progress-fab.is-error .progress-fab-btn {
+  background: oklch(0.52 0.18 26 / 0.95);
+  border-color: oklch(0.68 0.15 24 / 0.8);
+}
+
+body[data-theme="dark"] .progress-fab-dismiss {
+  background: oklch(0.22 0.018 160 / 0.95);
+  border-color: oklch(0.43 0.03 162 / 0.9);
+  color: oklch(0.72 0.015 160);
+}
+
+body[data-theme="dark"] .col-failed-label {
+  color: color-mix(in oklch, oklch(0.72 0.14 24) 60%, oklch(0.88 0.015 160) 40%);
+}
+
 body[data-theme="dark"] .url-bar {
   background: oklch(0.22 0.015 160 / 0.95);
   border-color: oklch(0.41 0.025 162 / 0.85);

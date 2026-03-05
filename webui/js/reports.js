@@ -1,6 +1,7 @@
 import { renderMarkdown } from "./markdown.js";
 import { state } from "./state.js";
 import { byId, escapeHtml } from "./utils.js";
+import { showProgressSnapshot } from "./progress.js";
 
 const CALENDAR_ICON = `
 <svg class="inline-icon" aria-hidden="true" viewBox="0 0 16 16" focusable="false">
@@ -197,10 +198,23 @@ function renderReportTable() {
 
   tbody.innerHTML = state.reports
     .map((report) => {
+      if (report.status === "in_progress") {
+        const projectLabel = extractProjectLabel(report.previewUrl);
+        return `<tr class="reports-table-row is-loading" data-report-id="${escapeHtml(report.id)}" data-report-status="in_progress">
+          <td class="col-status"><span class="row-status-dot is-loading"></span></td>
+          <td class="col-num">${report.order}</td>
+          <td class="col-project">${escapeHtml(projectLabel)}</td>
+          <td class="col-generated">In progress…</td>
+          <td class="col-model">${escapeHtml(report.previewModel)}</td>
+          <td class="col-items">—</td>
+          <td class="col-comments">—</td>
+        </tr>`;
+      }
+
       const metadataMap = new Map(report.metadata.map((e) => [e.label.toLowerCase(), e.value]));
-      const projectName = metadataMap.get("project name") || "—";
+      const projectName = metadataMap.get("project name") || extractProjectLabel(report.previewUrl);
       const generated = metadataMap.get("generated") || "";
-      const aiProvider = metadataMap.get("ai provider") || "—";
+      const aiProvider = metadataMap.get("ai provider") || report.previewModel || "—";
       const totalItems = metadataMap.get("total items fetched") || "—";
       const updatedItems = metadataMap.get("items updated in lookback window") || "";
       const comments = metadataMap.get("comments created in lookback window") || "—";
@@ -210,7 +224,27 @@ function renderReportTable() {
       const itemsDisplay = updatedItems ? `${updatedItems} / ${totalItems}` : totalItems;
       const generatedDisplay = generated ? formatGeneratedDate(generated) : "—";
 
-      return `<tr class="reports-table-row" data-report-id="${escapeHtml(report.id)}" tabindex="0">
+      if (report.status === "failed") {
+        const statusDot = !report.read
+          ? `<span class="row-status-dot is-failed"></span>`
+          : "";
+        return `<tr class="reports-table-row is-failed" data-report-id="${escapeHtml(report.id)}" data-report-status="failed" tabindex="0">
+          <td class="col-status">${statusDot}</td>
+          <td class="col-num">${report.order}</td>
+          <td class="col-project col-failed-label">${escapeHtml(projectName)}</td>
+          <td class="col-generated col-failed-label">Failed</td>
+          <td class="col-model">${escapeHtml(modelName)}</td>
+          <td class="col-items">—</td>
+          <td class="col-comments">—</td>
+        </tr>`;
+      }
+
+      // completed
+      const statusDot = !report.read
+        ? `<span class="row-status-dot is-new"></span>`
+        : "";
+      return `<tr class="reports-table-row" data-report-id="${escapeHtml(report.id)}" data-report-status="completed" tabindex="0">
+        <td class="col-status">${statusDot}</td>
         <td class="col-num">${report.order}</td>
         <td class="col-project">${escapeHtml(projectName)}</td>
         <td class="col-generated">${escapeHtml(generatedDisplay)}</td>
@@ -221,14 +255,24 @@ function renderReportTable() {
     })
     .join("");
 
-  tbody.querySelectorAll(".reports-table-row").forEach((row) => {
-    row.addEventListener("click", () => {
-      window.location.hash = `#report/${row.dataset.reportId}`;
-    });
+  tbody.querySelectorAll(".reports-table-row[data-report-status]").forEach((row) => {
+    const { reportId, reportStatus } = row.dataset;
+    if (reportStatus === "in_progress") return;
+
+    const handleActivate = () => {
+      if (reportStatus === "failed") {
+        const report = state.reports.find((r) => r.id === reportId);
+        if (report) showFailedReport(report);
+      } else {
+        window.location.hash = `#report/${reportId}`;
+      }
+    };
+
+    row.addEventListener("click", handleActivate);
     row.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        window.location.hash = `#report/${row.dataset.reportId}`;
+        handleActivate();
       }
     });
   });
@@ -239,7 +283,9 @@ function renderActiveReport() {
   if (!container) return;
 
   const report = state.reports.find((r) => r.id === state.activeReportId);
-  if (!report) return;
+  if (!report || report.status !== "completed") return;
+
+  markReportRead(report.id);
 
   const orderedMetadata = [...report.metadata].sort(
     (a, b) =>
@@ -382,10 +428,10 @@ function renderActiveReport() {
   });
 }
 
-function updateReportsBadge() {
+export function updateReportsBadge() {
   const badge = byId("reports-count-badge");
   if (!badge) return;
-  const count = state.reports.length;
+  const count = state.reports.filter((r) => r.status !== "in_progress" && !r.read).length;
   if (count === 0) {
     badge.classList.add("hidden");
   } else {
@@ -414,15 +460,78 @@ function handleHashChange() {
   }
 }
 
-export function addReportTab(filename, markdown) {
-  const { bodyMarkdown, metadata } = splitReportContent(markdown);
+export function extractProjectLabel(url) {
+  if (!url) return "—";
+  try {
+    const u = new URL(url);
+    const parts = u.pathname.split("/").filter(Boolean);
+    const projectIdx = parts.indexOf("projects");
+    if (projectIdx > 0) {
+      return `${parts[projectIdx - 1]} / #${parts[projectIdx + 1] || "?"}`;
+    }
+    return u.hostname;
+  } catch (_e) {
+    return url.length > 32 ? url.slice(0, 32) + "…" : url;
+  }
+}
+
+export function startReport(payload) {
   state.reportCounter += 1;
   const id = `report-${state.reportCounter}`;
-  state.reports.push({ id, order: state.reportCounter, filename, markdown: bodyMarkdown, metadata });
-  state.activeReportId = id;
+  state.reports.push({
+    id,
+    order: state.reportCounter,
+    status: "in_progress",
+    read: false,
+    filename: "",
+    markdown: "",
+    metadata: [],
+    previewModel: payload.model || "",
+    previewUrl: payload.project_url || "",
+    progressSnapshot: null,
+  });
+  renderReportTable();
+  return id;
+}
+
+export function completeReport(id, filename, markdown) {
+  const report = state.reports.find((r) => r.id === id);
+  if (!report) return;
+  const { bodyMarkdown, metadata } = splitReportContent(markdown);
+  report.filename = filename;
+  report.markdown = bodyMarkdown;
+  report.metadata = metadata;
+  report.status = "completed";
+  renderReportTable();
   updateReportsBadge();
-  selectTab("reports");
+}
+
+export function failReport(id) {
+  const report = state.reports.find((r) => r.id === id);
+  if (!report) return;
+  const progressList = byId("progress-list");
+  report.progressSnapshot = progressList ? progressList.innerHTML : "";
+  report.status = "failed";
+  renderReportTable();
+  updateReportsBadge();
+}
+
+export function markReportRead(id) {
+  const report = state.reports.find((r) => r.id === id);
+  if (!report || report.read) return;
+  report.read = true;
+  updateReportsBadge();
+}
+
+function showFailedReport(report) {
+  markReportRead(report.id);
+  showProgressSnapshot(report.progressSnapshot || "");
+}
+
+export function navigateToReport(id) {
+  state.activeReportId = id;
   history.pushState(null, "", `#report/${id}`);
+  selectTab("reports");
   showDetailView();
   renderActiveReport();
 }
