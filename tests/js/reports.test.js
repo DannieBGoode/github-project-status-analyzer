@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { getTemporaryButtonState, selectTab, splitReportContent } = await import("../../webui/js/reports.js");
+const { getTemporaryButtonState, openReportsEmptyTarget, selectTab, splitReportContent } = await import("../../webui/js/reports.js");
 
 function createMockElement({ id = "", tab = "", classes = [] } = {}) {
   const classSet = new Set(classes);
@@ -147,4 +147,39 @@ test("splitReportContent leaves markdown unchanged when report preamble is absen
   const result = splitReportContent(markdown);
   assert.equal(result.metadata.length, 0);
   assert.equal(result.bodyMarkdown, markdown);
+});
+test("openReportsEmptyTarget clears report hash and activates generator tab", () => {
+  const calls = [];
+  global.history = {
+    pushState(_state, _title, url) {
+      calls.push(url);
+    },
+  };
+  global.window = {
+    location: {
+      hash: "#report/report-9",
+      pathname: "/",
+    },
+  };
+  const generatorTab = createMockElement({ tab: "generator", classes: ["nav-tab"] });
+  const reportsTab = createMockElement({ tab: "reports", classes: ["nav-tab", "active"] });
+  const settingsBtn = createMockElement({ tab: "settings", classes: ["utility-btn"] });
+  const generatorPanel = createMockElement({ id: "tab-generator", classes: ["tab-panel"] });
+  const reportsPanel = createMockElement({ id: "tab-reports", classes: ["tab-panel", "active"] });
+  const settingsPanel = createMockElement({ id: "tab-settings", classes: ["tab-panel"] });
+  global.document = {
+    querySelectorAll(selector) {
+      if (selector === "[data-tab]") return [generatorTab, reportsTab, settingsBtn];
+      if (selector === ".tab-panel") return [generatorPanel, reportsPanel, settingsPanel];
+      return [];
+    },
+    getElementById() {
+      return null;
+    },
+  };
+  openReportsEmptyTarget("generator");
+  assert.deepEqual(calls, ["/"]);
+  assert.equal(generatorTab.classList.contains("active"), true);
+  assert.equal(generatorPanel.classList.contains("active"), true);
+  assert.equal(reportsPanel.classList.contains("active"), false);
 });

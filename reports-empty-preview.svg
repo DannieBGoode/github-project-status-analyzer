@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1040" viewBox="0 0 1440 1040" role="img" aria-labelledby="title desc">
+  <title id="title">Reports empty state preview</title>
+  <desc id="desc">Static preview of the Reports tab empty state onboarding panel.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f2f8f1"/>
+      <stop offset="52%" stop-color="#eff7f3"/>
+      <stop offset="100%" stop-color="#f1f7ef"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0.1" cy="0" r="0.7">
+      <stop offset="0%" stop-color="#d6efe0" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#d6efe0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0.95" cy="1" r="0.65">
+      <stop offset="0%" stop-color="#ddefd7" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#ddefd7" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cardFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fbfefd"/>
+      <stop offset="100%" stop-color="#f7fbf8"/>
+    </linearGradient>
+    <linearGradient id="emptyFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fbfefd"/>
+      <stop offset="100%" stop-color="#f1f8f4"/>
+    </linearGradient>
+    <radialGradient id="emptyGlow" cx="0.92" cy="0.08" r="0.55">
+      <stop offset="0%" stop-color="#dff3e8" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#dff3e8" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="24" stdDeviation="26" flood-color="#234338" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="1040" fill="url(#bg)"/>
+  <rect width="1440" height="1040" fill="url(#glowA)"/>
+  <rect width="1440" height="1040" fill="url(#glowB)"/>
+
+  <g transform="translate(160 54)">
+    <text x="0" y="56" font-size="52" font-weight="800" font-family="Segoe UI, Arial, sans-serif" fill="#1d3a31">Executive Report Studio</text>
+    <text x="0" y="104" font-size="22" font-family="Segoe UI, Arial, sans-serif" fill="#5f7e73">Analyze GitHub project boards. Generate leadership-ready status reports.</text>
+    <line x1="0" y1="146" x2="1120" y2="146" stroke="#b9d0c5" stroke-width="1.5"/>
+
+    <g transform="translate(0 178)">
+      <rect x="0" y="0" rx="16" ry="16" width="152" height="52" fill="#ffffff" stroke="#c1d4c8"/>
+      <text x="76" y="32" text-anchor="middle" font-size="19" font-weight="700" font-family="Segoe UI, Arial, sans-serif" fill="#4e6c62">Generator</text>
+      <rect x="164" y="0" rx="16" ry="16" width="136" height="52" fill="#e6f4ed" stroke="#75b39c"/>
+      <text x="232" y="32" text-anchor="middle" font-size="19" font-weight="700" font-family="Segoe UI, Arial, sans-serif" fill="#1f3f35">Reports</text>
+    </g>
+
+    <g transform="translate(0 258)" filter="url(#shadow)">
+      <rect x="0" y="0" rx="24" ry="24" width="1120" height="560" fill="url(#emptyFill)" stroke="#adc9bb"/>
+      <rect x="0" y="0" rx="24" ry="24" width="1120" height="560" fill="url(#emptyGlow)"/>
+
+      <g transform="translate(44 42)">
+        <rect x="0" y="0" rx="999" ry="999" width="124" height="34" fill="#ddf1e8"/>
+        <text x="62" y="22" text-anchor="middle" font-size="14" letter-spacing="1.8" font-weight="700" font-family="Segoe UI, Arial, sans-serif" fill="#2b6655">REPORT HISTORY</text>
+
+        <text x="0" y="82" font-size="42" font-weight="800" font-family="Segoe UI, Arial, sans-serif" fill="#1d3a31">Your report library will appear here</text>
+        <text x="0" y="126" font-size="22" font-family="Segoe UI, Arial, sans-serif" fill="#5d7b71">Each generated report is saved here for quick review, comparison, and reuse during</text>
+        <text x="0" y="156" font-size="22" font-family="Segoe UI, Arial, sans-serif" fill="#5d7b71">leadership updates.</text>
+      </g>
+
+      <g transform="translate(54 236)">
+        <circle cx="16" cy="16" r="16" fill="#d8efe4"/>
+        <text x="16" y="21" text-anchor="middle" font-size="18" font-weight="800" font-family="Segoe UI, Arial, sans-serif" fill="#1f5f4f">1</text>
+        <text x="48" y="14" font-size="25" font-weight="800" font-family="Segoe UI, Arial, sans-serif" fill="#213d33">Open Generator</text>
+        <text x="48" y="46" font-size="21" font-family="Segoe UI, Arial, sans-serif" fill="#647f75">Paste a GitHub project board URL and choose the AI model you want to use.</text>
+
+        <circle cx="16" cy="116" r="16" fill="#d8efe4"/>
+        <text x="16" y="121" text-anchor="middle" font-size="18" font-weight="800" font-family="Segoe UI, Arial, sans-serif" fill="#1f5f4f">2</text>
+        <text x="48" y="114" font-size="25" font-weight="800" font-family="Segoe UI, Arial, sans-serif" fill="#213d33">Run the report</text>
+        <text x="48" y="146" font-size="21" font-family="Segoe UI, Arial, sans-serif" fill="#647f75">The pipeline tracks progress live while the executive summary is assembled.</text>
+
+        <circle cx="16" cy="216" r="16" fill="#d8efe4"/>
+        <text x="16" y="221" text-anchor="middle" font-size="18" font-weight="800" font-family="Segoe UI, Arial, sans-serif" fill="#1f5f4f">3</text>
+        <text x="48" y="214" font-size="25" font-weight="800" font-family="Segoe UI, Arial, sans-serif" fill="#213d33">Return here to review</text>
+        <text x="48" y="246" font-size="21" font-family="Segoe UI, Arial, sans-serif" fill="#647f75">Completed reports stay available for download and later status reviews.</text>
+
+        <g transform="translate(0 316)">
+          <rect x="0" y="0" rx="14" ry="14" width="220" height="58" fill="#4b957d"/>
+          <text x="110" y="36" text-anchor="middle" font-size="21" font-weight="700" font-family="Segoe UI, Arial, sans-serif" fill="#f5fbf8">Open Generator</text>
+          <rect x="240" y="0" rx="14" ry="14" width="224" height="58" fill="#ffffff" stroke="#c1d4c8"/>
+          <text x="352" y="36" text-anchor="middle" font-size="21" font-weight="700" font-family="Segoe UI, Arial, sans-serif" fill="#365448">Review API Setup</text>
+        </g>
+      </g>
+
+      <g transform="translate(756 232)">
+        <rect x="0" y="0" rx="18" ry="18" width="310" height="238" fill="url(#cardFill)" stroke="#c1d4c8"/>
+        <text x="28" y="42" font-size="24" font-weight="800" font-family="Segoe UI, Arial, sans-serif" fill="#213d33">What you will see here</text>
+
+        <circle cx="30" cy="86" r="5.5" fill="#4b957d"/>
+        <text x="48" y="92" font-size="20" font-family="Segoe UI, Arial, sans-serif" fill="#647f75">Project name and report number</text>
+
+        <circle cx="30" cy="128" r="5.5" fill="#4b957d"/>
+        <text x="48" y="134" font-size="20" font-family="Segoe UI, Arial, sans-serif" fill="#647f75">Generation time and model used</text>
+
+        <circle cx="30" cy="170" r="5.5" fill="#4b957d"/>
+        <text x="48" y="176" font-size="20" font-family="Segoe UI, Arial, sans-serif" fill="#647f75">Fetched items, recent updates, and comments</text>
+      </g>
+    </g>
+  </g>
+</svg>

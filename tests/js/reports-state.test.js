@@ -7,6 +7,7 @@ const {
   failReport,
   markReportRead,
   extractProjectLabel,
+  initReports,
   updateReportsBadge,
 } = await import("../../webui/js/reports.js");
 const { state } = await import("../../webui/js/state.js");
@@ -32,6 +33,10 @@ function makeMockEl(initialClasses = []) {
     },
     setAttribute(k, v) { attrs[k] = String(v); },
     getAttribute(k)    { return attrs[k]; },
+    toggleAttribute(k, force) {
+      if (force) attrs[k] = "";
+      else delete attrs[k];
+    },
     get innerHTML()    { return _html; },
     set innerHTML(v)   { _html = v; },
     get textContent()  { return _text; },
@@ -336,4 +341,82 @@ test("updateReportsBadge hides badge when no reports exist", () => {
   setupBadgeDom(badge);
   updateReportsBadge();
   assert.ok(badge.classList.contains("hidden"));
+});
+
+
+function makeClickableEl(initialClasses = []) {
+  const el = makeMockEl(initialClasses);
+  const listeners = new Map();
+  el.addEventListener = (type, handler) => {
+    listeners.set(type, handler);
+  };
+  el.click = () => {
+    const handler = listeners.get("click");
+    if (handler) handler({ type: "click" });
+  };
+  return el;
+}
+
+test("initReports wires empty-state buttons to generator and settings tabs", () => {
+  resetState();
+  const openGeneratorBtn = makeClickableEl();
+  const openSettingsBtn = makeClickableEl();
+  const backBtn = makeClickableEl();
+  const reportsTabBtn = makeClickableEl();
+  const tableView = makeMockEl(["hidden"]);
+  const detailView = makeMockEl();
+  const empty = makeMockEl();
+  const tableCard = makeMockEl(["hidden"]);
+  const tbody = makeMockEl();
+  const badge = makeMockEl(["hidden"]);
+  const generatorTab = makeMockEl(["nav-tab"]);
+  generatorTab.dataset = { tab: "generator" };
+  const reportsTab = makeMockEl(["nav-tab"]);
+  reportsTab.dataset = { tab: "reports" };
+  const settingsBtn = makeMockEl(["utility-btn"]);
+  settingsBtn.dataset = { tab: "settings" };
+  const generatorPanel = makeMockEl(["tab-panel"]);
+  generatorPanel.id = "tab-generator";
+  const reportsPanel = makeMockEl(["tab-panel"]);
+  reportsPanel.id = "tab-reports";
+  const settingsPanel = makeMockEl(["tab-panel"]);
+  settingsPanel.id = "tab-settings";
+
+  global.window = {
+    location: { hash: "", pathname: "/" },
+    addEventListener() {},
+  };
+  global.history = {
+    pushState() {},
+  };
+  global.document = {
+    getElementById(id) {
+      return {
+        "reports-empty-open-generator": openGeneratorBtn,
+        "reports-empty-open-settings": openSettingsBtn,
+        "reports-back-btn": backBtn,
+        "tab-trigger-reports": reportsTabBtn,
+        "reports-table-view": tableView,
+        "reports-detail-view": detailView,
+        "reports-empty": empty,
+        "reports-table-card": tableCard,
+        "reports-table-body": tbody,
+        "reports-count-badge": badge,
+      }[id] ?? null;
+    },
+    querySelectorAll(selector) {
+      if (selector === "[data-tab]") return [generatorTab, reportsTab, settingsBtn];
+      if (selector === ".tab-panel") return [generatorPanel, reportsPanel, settingsPanel];
+      return [];
+    },
+  };
+
+  initReports();
+  openGeneratorBtn.click();
+  assert.ok(generatorTab.classList.contains("active"));
+  assert.ok(generatorPanel.classList.contains("active"));
+
+  openSettingsBtn.click();
+  assert.ok(settingsBtn.classList.contains("active"));
+  assert.ok(settingsPanel.classList.contains("active"));
 });

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reports Empty Preview</title>
+    <link rel="stylesheet" href="/styles.css?v=20260304-17" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="hero">
+        <div class="hero-top">
+          <h1>Executive Report Studio</h1>
+        </div>
+        <p class="subtitle">Analyze GitHub project boards. Generate leadership-ready status reports.</p>
+      </header>
+
+      <nav id="primary-tabs" class="tabs primary-tabs" role="tablist" aria-label="Primary navigation">
+        <button type="button" class="tab-btn nav-tab" aria-selected="false">Generator</button>
+        <button type="button" class="tab-btn nav-tab active" aria-selected="true">Reports</button>
+        <span class="tabs-spacer"></span>
+      </nav>
+
+      <section id="tab-reports" class="tab-panel active" aria-hidden="false">
+        <div id="reports-table-view">
+          <div id="reports-empty" class="card reports-empty">
+            <div class="reports-empty-hero">
+              <span class="reports-empty-eyebrow">Report history</span>
+              <h2>Your report library will appear here</h2>
+              <p class="reports-empty-intro">
+                Each generated report is saved here for quick review, comparison, and reuse during
+                leadership updates.
+              </p>
+            </div>
+            <div class="reports-empty-layout">
+              <div class="reports-empty-main">
+                <ol class="reports-empty-steps" aria-label="How to create your first report">
+                  <li>
+                    <strong>Open Generator</strong>
+                    <span>Paste a GitHub project board URL and choose the AI model you want to use.</span>
+                  </li>
+                  <li>
+                    <strong>Run the report</strong>
+                    <span>The pipeline tracks progress live while the executive summary is assembled.</span>
+                  </li>
+                  <li>
+                    <strong>Return here to review</strong>
+                    <span>Completed reports stay available for download and later status reviews.</span>
+                  </li>
+                </ol>
+                <div class="reports-empty-actions">
+                  <button type="button" class="primary">Open Generator</button>
+                  <button type="button" class="secondary">Review API Setup</button>
+                </div>
+              </div>
+              <aside class="reports-empty-preview" aria-label="What this area will show">
+                <h3>What you will see here</h3>
+                <ul>
+                  <li>Project name and report number</li>
+                  <li>Generation time and model used</li>
+                  <li>Fetched items, recent updates, and comments</li>
+                </ul>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

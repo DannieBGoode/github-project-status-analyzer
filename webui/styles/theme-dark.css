@@ -228,6 +228,25 @@ body[data-theme="dark"] .reports-empty p {
   color: oklch(0.74 0.02 160);
 }
 
+body[data-theme="dark"] .reports-empty {
+  background: linear-gradient(180deg, oklch(0.22 0.024 160 / 0.98), oklch(0.18 0.022 162 / 0.99));
+  border-color: oklch(0.48 0.06 165 / 0.5);
+}
+
+body[data-theme="dark"] .reports-empty-eyebrow {
+  color: oklch(0.9 0.02 160);
+}
+
+body[data-theme="dark"] .reports-empty-intro,
+body[data-theme="dark"] .reports-empty-steps span {
+  color: oklch(0.78 0.018 160);
+}
+
+body[data-theme="dark"] .reports-empty-steps li::before {
+  background: oklch(0.31 0.06 162 / 0.95);
+  color: oklch(0.92 0.02 160);
+}
+
 body[data-theme="dark"] .loading {
   background:
     radial-gradient(circle at 20% 10%, oklch(0.2 0.05 160 / 0.22), transparent 35%),

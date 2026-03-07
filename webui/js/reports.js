@@ -139,6 +139,18 @@ export function selectTab(tabId) {
   });
 }
 
+export function openReportsEmptyTarget(tabId) {
+  if (window.location.hash.startsWith("#report/")) {
+    history.pushState(null, "", window.location.pathname);
+  }
+  state.activeReportId = null;
+  selectTab(tabId);
+  if (tabId === "reports") {
+    showTableView();
+    renderReportTable();
+  }
+}
+
 function formatGeneratedDate(raw) {
   const match = raw.match(/^(\d{4})-([A-Za-z]+)-(\d{2})\s+(\d{2}):(\d{2})/);
   if (!match) return raw;
@@ -556,6 +568,20 @@ export function initReports() {
       }
       showTableView();
       renderReportTable();
+    });
+  }
+
+  const openGeneratorBtn = byId("reports-empty-open-generator");
+  if (openGeneratorBtn) {
+    openGeneratorBtn.addEventListener("click", () => {
+      openReportsEmptyTarget("generator");
+    });
+  }
+
+  const openSettingsBtn = byId("reports-empty-open-settings");
+  if (openSettingsBtn) {
+    openSettingsBtn.addEventListener("click", () => {
+      openReportsEmptyTarget("settings");
     });
   }
 

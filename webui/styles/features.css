@@ -103,15 +103,81 @@
 
 .reports-empty {
   text-align: left;
+  padding: clamp(1.25rem, 2vw, 1.75rem);
+  background: linear-gradient(180deg, color-mix(in oklch, var(--surface-soft) 80%, white 20%), var(--surface));
+  border: 1px solid color-mix(in oklch, var(--line-strong) 58%, white 42%);
+}
+
+.reports-empty-eyebrow {
+  display: inline-flex;
+  margin-bottom: 0.75rem;
+  color: color-mix(in oklch, var(--accent-strong) 78%, var(--ink) 22%);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .reports-empty h2 {
-  margin: 0 0 0.3rem;
+  margin: 0;
 }
 
-.reports-empty p {
-  margin: 0;
+.reports-empty-intro {
+  margin: 0.55rem 0 1rem;
+  max-width: 36rem;
+  color: color-mix(in oklch, var(--ink) 70%, var(--muted) 30%);
+}
+
+.reports-empty-steps {
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+  counter-reset: reports-empty-step;
+  display: grid;
+  gap: 0.9rem;
+  max-width: 42rem;
+}
+
+.reports-empty-steps li {
+  position: relative;
+  padding-left: 2.2rem;
+  color: color-mix(in oklch, var(--ink) 76%, var(--muted) 24%);
+}
+
+.reports-empty-steps li::before {
+  counter-increment: reports-empty-step;
+  content: counter(reports-empty-step);
+  position: absolute;
+  left: 0;
+  top: 0.02rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklch, var(--accent-soft) 68%, white 32%);
+  color: color-mix(in oklch, var(--accent-strong) 82%, var(--ink) 18%);
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.reports-empty-steps strong {
+  display: block;
+  margin-bottom: 0.16rem;
+  font-family: "Sora", "Franklin Gothic Medium", sans-serif;
+  font-size: 0.92rem;
+}
+
+.reports-empty-steps span {
   color: var(--muted);
+  line-height: 1.5;
+}
+
+.reports-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
 }
 
 .report-toolbar {
@@ -818,6 +884,10 @@
 }
 
 @media (max-width: 860px) {
+  .reports-empty-steps li {
+    padding-left: 2rem;
+  }
+
   .loading-panel {
     padding: 0.82rem;
   }

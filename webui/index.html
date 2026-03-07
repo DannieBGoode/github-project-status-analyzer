@@ -119,11 +119,33 @@
       >
         <div id="reports-table-view">
           <div id="reports-empty" class="card reports-empty">
-            <h2>No Reports Yet</h2>
-            <p>
-              Run your first report from the Generator tab. Generated reports will appear here
-              automatically.
+            <span class="reports-empty-eyebrow">Report history</span>
+            <h2>Your report library will appear here</h2>
+            <p class="reports-empty-intro">
+              Run a report once and this view becomes your review history for leadership updates.
             </p>
+            <ol class="reports-empty-steps" aria-label="How to create your first report">
+              <li>
+                <strong>Open Generator</strong>
+                <span>Paste a GitHub project board URL and choose a model.</span>
+              </li>
+              <li>
+                <strong>Run the report</strong>
+                <span>Track progress live while the executive summary is assembled.</span>
+              </li>
+              <li>
+                <strong>Review it here</strong>
+                <span>Saved reports show project, generated time, model, and recent activity.</span>
+              </li>
+            </ol>
+            <div class="reports-empty-actions">
+              <button id="reports-empty-open-generator" type="button" class="primary">
+                Open Generator
+              </button>
+              <button id="reports-empty-open-settings" type="button" class="secondary">
+                API Setup
+              </button>
+            </div>
           </div>
           <div id="reports-table-card" class="card reports-table-card hidden">
             <table class="reports-table" id="reports-table" aria-label="Generated reports">
