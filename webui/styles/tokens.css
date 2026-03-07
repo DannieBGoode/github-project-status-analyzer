@@ -18,6 +18,27 @@
   --in-progress: oklch(0.7 0.13 245);
   --done: oklch(0.72 0.15 150);
   --failed: oklch(0.66 0.16 25);
+  --text-on-accent: oklch(0.98 0.005 160);
+  --link: oklch(0.45 0.14 240);
+  --link-strong: oklch(0.43 0.16 245);
+  --link-decoration: color-mix(in oklch, var(--link) 64%, transparent 36%);
+  --link-hover: color-mix(in oklch, var(--accent-strong) 70%, var(--link) 30%);
+  --panel-shadow: 0 34px 45px -30px oklch(0.28 0.04 160 / 0.42);
+  --panel-success-ring: oklch(0.72 0.15 150 / 0.38);
+  --progress-active-border: oklch(0.68 0.12 245 / 0.9);
+  --progress-active-border-strong: oklch(0.3 0.07 245 / 0.96);
+  --progress-active-outline: oklch(0.68 0.11 245 / 0.72);
+  --progress-active-surface: oklch(0.83 0.06 245 / 0.26);
+  --progress-success-surface: oklch(0.8 0.1 150 / 0.56);
+  --progress-success-ink: oklch(0.34 0.12 150);
+  --progress-success-outline: oklch(0.66 0.13 150 / 0.76);
+  --progress-success-panel: oklch(0.84 0.08 150 / 0.34);
+  --progress-error-surface: oklch(0.56 0.2 26 / 0.96);
+  --progress-error-ink: oklch(0.99 0.005 25);
+  --progress-error-outline: oklch(0.42 0.16 26 / 0.98);
+  --progress-error-panel-outline: oklch(0.64 0.16 26 / 0.86);
+  --progress-error-panel: oklch(0.92 0.06 24 / 0.56);
+  --progress-error-text: oklch(0.47 0.17 24);
   --chip-border: 1px solid color-mix(in oklch, var(--line-strong) 72%, white 28%);
   --chip-bg: oklch(1 0 0 / 0.8);
   --chip-ink: color-mix(in oklch, var(--ink) 78%, var(--muted) 22%);
@@ -52,3 +73,4 @@ body {
     radial-gradient(circle at 90% 120%, oklch(0.93 0.04 130 / 0.7), transparent 45%),
     linear-gradient(125deg, oklch(0.97 0.016 145) 0%, oklch(0.955 0.012 165) 45%, oklch(0.968 0.01 130) 100%);
 }
+

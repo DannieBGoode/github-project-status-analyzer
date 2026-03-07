@@ -7,7 +7,25 @@ body[data-theme="dark"] {
   --line: oklch(0.34 0.022 152);
   --line-strong: oklch(0.44 0.032 154);
   --accent-soft: oklch(0.27 0.04 162);
-
+  --link: oklch(0.82 0.14 230);
+  --link-strong: oklch(0.82 0.14 230);
+  --link-decoration: oklch(0.82 0.14 230 / 0.58);
+  --link-hover: oklch(0.9 0.08 170);
+  --panel-shadow: 0 34px 45px -30px rgba(0, 0, 0, 0.95);
+  --progress-active-border: oklch(0.84 0.03 245 / 0.9);
+  --progress-active-border-strong: oklch(0.98 0.003 220);
+  --progress-active-outline: oklch(0.74 0.1 245 / 0.65);
+  --progress-active-surface: oklch(0.72 0.12 245 / 0.12);
+  --progress-success-surface: oklch(0.72 0.15 150 / 0.22);
+  --progress-success-ink: oklch(0.92 0.08 150);
+  --progress-success-outline: oklch(0.73 0.13 150 / 0.68);
+  --progress-success-panel: oklch(0.73 0.13 150 / 0.12);
+  --progress-error-surface: oklch(0.62 0.2 26 / 0.98);
+  --progress-error-ink: oklch(0.99 0.005 25);
+  --progress-error-outline: oklch(0.79 0.13 24 / 0.95);
+  --progress-error-panel-outline: oklch(0.7 0.15 24 / 0.86);
+  --progress-error-panel: oklch(0.38 0.1 24 / 0.34);
+  --progress-error-text: oklch(0.9 0.1 24);
   color: oklch(0.93 0.015 160);
   background:
     radial-gradient(circle at 8% -18%, oklch(0.28 0.06 165 / 0.45), transparent 44%),
@@ -113,13 +131,13 @@ body[data-theme="dark"] .report-actions-inline {
 }
 
 body[data-theme="dark"] .report-meta-project-link {
-  color: oklch(0.82 0.14 230);
-  text-decoration-color: oklch(0.82 0.14 230 / 0.58);
+  color: var(--link);
+  text-decoration-color: var(--link-decoration);
 }
 
 body[data-theme="dark"] .report-meta-project-link:hover,
 body[data-theme="dark"] .report-meta-project-link:focus-visible {
-  color: oklch(0.9 0.08 170);
+  color: var(--link-hover);
   text-decoration-color: currentColor;
 }
 
@@ -136,7 +154,7 @@ body[data-theme="dark"] .stats-segment strong {
   color: oklch(0.95 0.01 160);
 }
 
-body[data-theme="dark"] .report-download-btn {
+body[data-theme="dark"] .markdown-download-btn {
   background: linear-gradient(
     155deg,
     color-mix(in oklch, var(--accent) 80%, oklch(0.18 0.02 160) 20%),
@@ -161,12 +179,12 @@ body[data-theme="dark"] .markdown-copy-btn.is-copied::after {
 }
 
 body[data-theme="dark"] .markdown-copy-btn.is-copied {
-  color: oklch(0.92 0.08 150);
+  color: var(--progress-success-ink);
   border-color: oklch(0.66 0.13 150 / 0.8);
 }
 
 body[data-theme="dark"] .markdown-copy-btn.is-error {
-  color: oklch(0.9 0.1 24);
+  color: var(--progress-error-text);
   border-color: oklch(0.71 0.13 25 / 0.8);
 }
 
@@ -222,7 +240,7 @@ body[data-theme="dark"] .loading-panel {
   background:
     linear-gradient(165deg, oklch(0.2 0.03 160 / 0.95), oklch(0.17 0.025 162 / 0.98)),
     repeating-linear-gradient(0deg, transparent 0, transparent 24px, oklch(0.62 0.06 160 / 0.08) 24px, oklch(0.62 0.06 160 / 0.08) 25px);
-  box-shadow: 0 34px 45px -30px rgba(0, 0, 0, 0.95);
+  box-shadow: var(--panel-shadow);
 }
 
 body[data-theme="dark"] .loading-head {
@@ -256,43 +274,43 @@ body[data-theme="dark"] .progress-icon.pending {
 }
 
 body[data-theme="dark"] .progress-icon.in_progress {
-  border-color: oklch(0.84 0.03 245 / 0.9);
-  border-top-color: oklch(0.98 0.003 220);
+  border-color: var(--progress-active-border);
+  border-top-color: var(--progress-active-border-strong);
 }
 
 body[data-theme="dark"] .progress-icon.completed {
-  background: oklch(0.72 0.15 150 / 0.22);
-  color: oklch(0.92 0.08 150);
+  background: var(--progress-success-surface);
+  color: var(--progress-success-ink);
 }
 
 body[data-theme="dark"] .progress-item.in_progress {
-  border-color: oklch(0.74 0.1 245 / 0.65);
-  background: oklch(0.72 0.12 245 / 0.12);
+  border-color: var(--progress-active-outline);
+  background: var(--progress-active-surface);
 }
 
 body[data-theme="dark"] .progress-item.completed {
-  border-color: oklch(0.73 0.13 150 / 0.68);
-  background: oklch(0.73 0.13 150 / 0.12);
+  border-color: var(--progress-success-outline);
+  background: var(--progress-success-panel);
 }
 
 body[data-theme="dark"] .progress-icon.failed {
-  background: oklch(0.62 0.2 26 / 0.98);
-  color: oklch(0.99 0.005 25);
-  border: 2px solid oklch(0.79 0.13 24 / 0.95);
+  background: var(--progress-error-surface);
+  color: var(--progress-error-ink);
+  border: 2px solid var(--progress-error-outline);
 }
 
 body[data-theme="dark"] .progress-item.failed {
-  border-color: oklch(0.7 0.15 24 / 0.86);
-  background: oklch(0.38 0.1 24 / 0.34);
+  border-color: var(--progress-error-panel-outline);
+  background: var(--progress-error-panel);
 }
 
 body[data-theme="dark"] .progress-error {
-  color: oklch(0.9 0.1 24);
+  color: var(--progress-error-text);
   font-weight: 600;
 }
 
 body[data-theme="dark"] .markdown-render a {
-  color: oklch(0.82 0.14 230);
+  color: var(--link);
 }
 
 body[data-theme="dark"] .loading-minimize-btn {
@@ -372,3 +390,4 @@ body[data-theme="dark"] .reports-table-row:hover {
 body[data-theme="dark"] .reports-table-row:focus-visible {
   outline-color: oklch(0.62 0.12 160 / 0.8);
 }
+

@@ -10,7 +10,7 @@
   padding: 0.06rem 0.42rem;
   border-radius: 999px;
   background: var(--accent-strong);
-  color: oklch(0.98 0.005 160);
+  color: var(--text-on-accent);
   font-size: 0.68rem;
   font-weight: 700;
   line-height: 1.4;
@@ -167,8 +167,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.22rem;
-  color: oklch(0.45 0.14 240);
-  text-decoration-color: color-mix(in oklch, oklch(0.45 0.14 240) 64%, transparent 36%);
+  color: var(--link);
+  text-decoration-color: var(--link-decoration);
   text-decoration-thickness: 1.5px;
   text-underline-offset: 2px;
   transition: color 0.2s ease, text-decoration-color 0.2s ease, transform 0.22s var(--ease-out);
@@ -183,7 +183,7 @@
 
 .report-meta-project-link:hover,
 .report-meta-project-link:focus-visible {
-  color: color-mix(in oklch, var(--accent-strong) 70%, oklch(0.45 0.14 240) 30%);
+  color: var(--link-hover);
   text-decoration-color: currentColor;
   transform: translateX(1px);
 }
@@ -363,7 +363,7 @@
 }
 
 .markdown-render a {
-  color: oklch(0.43 0.16 245);
+  color: var(--link-strong);
   text-decoration-thickness: 1.5px;
   text-underline-offset: 2px;
 }
@@ -406,7 +406,7 @@
   background:
     linear-gradient(165deg, oklch(0.99 0.008 160 / 0.98), oklch(0.97 0.012 154 / 0.98)),
     repeating-linear-gradient(0deg, transparent 0, transparent 24px, oklch(0.88 0.02 155 / 0.28) 24px, oklch(0.88 0.02 155 / 0.28) 25px);
-  box-shadow: 0 34px 45px -30px oklch(0.28 0.04 160 / 0.42);
+  box-shadow: var(--panel-shadow);
   animation: modal-enter 0.28s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
@@ -503,42 +503,42 @@
 }
 
 .progress-icon.in_progress {
-  border: 2px solid oklch(0.68 0.12 245 / 0.9);
-  border-top-color: oklch(0.3 0.07 245 / 0.96);
+  border: 2px solid var(--progress-active-border);
+  border-top-color: var(--progress-active-border-strong);
   animation: spin 0.8s linear infinite;
 }
 
 .progress-icon.completed {
-  background: oklch(0.8 0.1 150 / 0.56);
-  color: oklch(0.34 0.12 150);
+  background: var(--progress-success-surface);
+  color: var(--progress-success-ink);
   animation: check-pop 0.38s var(--ease-out) both;
 }
 
 .progress-icon.failed {
-  background: oklch(0.56 0.2 26 / 0.96);
-  color: oklch(0.99 0.005 25);
-  border: 2px solid oklch(0.42 0.16 26 / 0.98);
+  background: var(--progress-error-surface);
+  color: var(--progress-error-ink);
+  border: 2px solid var(--progress-error-outline);
 }
 
 .progress-item.in_progress {
-  border-color: oklch(0.68 0.11 245 / 0.72);
-  background: oklch(0.83 0.06 245 / 0.26);
+  border-color: var(--progress-active-outline);
+  background: var(--progress-active-surface);
 }
 
 .progress-item.completed {
-  border-color: oklch(0.66 0.13 150 / 0.76);
-  background: oklch(0.84 0.08 150 / 0.34);
+  border-color: var(--progress-success-outline);
+  background: var(--progress-success-panel);
 }
 
 .progress-item.failed {
-  border-color: oklch(0.64 0.16 26 / 0.86);
-  background: oklch(0.92 0.06 24 / 0.56);
+  border-color: var(--progress-error-panel-outline);
+  background: var(--progress-error-panel);
 }
 
 .progress-error {
   display: block;
   margin-top: 0.28rem;
-  color: oklch(0.47 0.17 24);
+  color: var(--progress-error-text);
   font-weight: 600;
   font-size: 0.76rem;
 }
@@ -628,7 +628,7 @@
 .progress-fab.is-success .progress-fab-btn {
   border-color: oklch(0.62 0.13 150 / 0.8);
   background: oklch(0.7 0.15 150);
-  color: oklch(0.98 0.005 160);
+  color: var(--text-on-accent);
   animation: none;
 }
 
@@ -831,3 +831,4 @@
     margin-left: calc(19px + 0.6rem);
   }
 }
+

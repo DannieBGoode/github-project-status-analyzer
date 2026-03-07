@@ -45,9 +45,9 @@
 }
 
 @keyframes panel-success-glow {
-  0%   { box-shadow: 0 34px 45px -30px oklch(0.28 0.04 160 / 0.42); }
-  40%  { box-shadow: 0 0 0 4px oklch(0.72 0.15 150 / 0.38), 0 34px 45px -30px oklch(0.28 0.04 160 / 0.42); }
-  100% { box-shadow: 0 34px 45px -30px oklch(0.28 0.04 160 / 0.42); }
+  0%   { box-shadow: var(--panel-shadow); }
+  40%  { box-shadow: 0 0 0 4px var(--panel-success-ring), var(--panel-shadow); }
+  100% { box-shadow: var(--panel-shadow); }
 }
 
 @keyframes step-enter {
@@ -111,3 +111,4 @@
     scroll-behavior: auto !important;
   }
 }
+
