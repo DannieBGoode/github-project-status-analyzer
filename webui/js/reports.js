@@ -56,6 +56,55 @@ function parseMetadataLine(line) {
   };
 }
 
+export function buildReportMetadataCards({ generated, provider, totalItems, updatedItems, newComments }) {
+  const generatedPart = generated
+    ? `<li class="report-meta-card report-meta-card-context">
+        <span class="report-meta-label">Generated</span>
+        <span class="report-meta-value">${CALENDAR_ICON}<span>${escapeHtml(formatGeneratedDate(generated))}</span></span>
+      </li>`
+    : "";
+
+  const modelName = provider
+    ? (provider.includes(" - ") ? provider.split(" - ").slice(1).join(" - ") : provider)
+    : "";
+
+  const providerPart = provider
+    ? `<li class="report-meta-card report-meta-card-context report-meta-card-model">
+        <span class="report-meta-label">Model</span>
+        <span class="report-meta-value">${MODEL_ICON}<span>${escapeHtml(modelName)}</span></span>
+      </li>`
+    : "";
+
+  let fetchedUpdatedPart = "";
+  if (totalItems || updatedItems) {
+    if (updatedItems && totalItems) {
+      fetchedUpdatedPart = `<li class="report-meta-card report-meta-card-metric">
+        <span class="report-meta-label">Activity</span>
+        <span class="report-meta-value">${FETCHED_ICON}<strong>${escapeHtml(updatedItems)}</strong><span class="meta-sep" aria-hidden="true">/</span>${escapeHtml(totalItems)} updates</span>
+      </li>`;
+    } else if (totalItems) {
+      fetchedUpdatedPart = `<li class="report-meta-card report-meta-card-metric">
+        <span class="report-meta-label">Activity</span>
+        <span class="report-meta-value">${FETCHED_ICON}<strong>${escapeHtml(totalItems)}</strong> fetched</span>
+      </li>`;
+    } else {
+      fetchedUpdatedPart = `<li class="report-meta-card report-meta-card-metric">
+        <span class="report-meta-label">Activity</span>
+        <span class="report-meta-value">${FETCHED_ICON}<strong>${escapeHtml(updatedItems)}</strong> updated</span>
+      </li>`;
+    }
+  }
+
+  const commentsPart = newComments
+    ? `<li class="report-meta-card report-meta-card-metric report-meta-card-comments">
+        <span class="report-meta-label">Discussion</span>
+        <span class="report-meta-value">${COMMENTS_ICON}<strong class="stats-comments">${escapeHtml(newComments)}</strong> new comments</span>
+      </li>`
+    : "";
+
+  return { generatedPart, providerPart, fetchedUpdatedPart, commentsPart };
+}
+
 function isExecutiveReportHeading(line) {
   const normalized = line.trim().replace(/^#+\s*/, "");
   return normalized.toLowerCase() === "executive report";
@@ -312,30 +361,13 @@ function renderActiveReport() {
   const totalItemsEntry = metadataMap.get("total items fetched");
   const updatedItemsEntry = metadataMap.get("items updated in lookback window");
   const newCommentsEntry = metadataMap.get("comments created in lookback window");
-  const generatedPart = generatedEntry
-    ? `<span class="meta-part">${CALENDAR_ICON}<span>${escapeHtml(formatGeneratedDate(generatedEntry.value))}</span></span>`
-    : "";
-  const modelName = providerEntry
-    ? (providerEntry.value.includes(" - ")
-        ? providerEntry.value.split(" - ").slice(1).join(" - ")
-        : providerEntry.value)
-    : "";
-  const providerPart = providerEntry
-    ? `<span class="meta-part meta-model">${MODEL_ICON}<span>${escapeHtml(modelName)}</span></span>`
-    : "";
-  let fetchedUpdatedPart = "";
-  if (totalItemsEntry || updatedItemsEntry) {
-    if (updatedItemsEntry && totalItemsEntry) {
-      fetchedUpdatedPart = `<span class="stats-segment">${FETCHED_ICON}<strong>${escapeHtml(updatedItemsEntry.value)}</strong><span class="meta-sep" aria-hidden="true">/</span>${escapeHtml(totalItemsEntry.value)} updates</span>`;
-    } else if (totalItemsEntry) {
-      fetchedUpdatedPart = `<span class="stats-segment">${FETCHED_ICON}<strong>${escapeHtml(totalItemsEntry.value)}</strong> fetched</span>`;
-    } else {
-      fetchedUpdatedPart = `<span class="stats-segment">${FETCHED_ICON}<strong>${escapeHtml(updatedItemsEntry.value)}</strong> updated</span>`;
-    }
-  }
-  const commentsPart = newCommentsEntry
-    ? `<span class="stats-segment">${COMMENTS_ICON}<strong class="stats-comments">${escapeHtml(newCommentsEntry.value)}</strong> new comments</span>`
-    : "";
+  const { generatedPart, providerPart, fetchedUpdatedPart, commentsPart } = buildReportMetadataCards({
+    generated: generatedEntry?.value || "",
+    provider: providerEntry?.value || "",
+    totalItems: totalItemsEntry?.value || "",
+    updatedItems: updatedItemsEntry?.value || "",
+    newComments: newCommentsEntry?.value || "",
+  });
 
   container.innerHTML = `
     <article class="card report-card">
@@ -356,10 +388,10 @@ function renderActiveReport() {
             <div class="report-file">${escapeHtml(report.filename)}</div>
           </div>
           <ul class="report-inline-stats" aria-label="Report activity metrics">
-            ${generatedPart ? `<li class="stats-context">${generatedPart}</li>` : ""}
-            ${fetchedUpdatedPart ? `<li class="stats-summary-main">${fetchedUpdatedPart}</li>` : ""}
-            ${providerPart ? `<li class="stats-context-model">${providerPart}</li>` : ""}
-            ${commentsPart ? `<li class="stats-summary-comments">${commentsPart}</li>` : ""}
+            ${generatedPart}
+            ${providerPart}
+            ${fetchedUpdatedPart}
+            ${commentsPart}
           </ul>
         </div>
       </div>

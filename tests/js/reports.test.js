@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { getTemporaryButtonState, openReportsEmptyTarget, selectTab, splitReportContent } = await import("../../webui/js/reports.js");
+const { buildReportMetadataCards, getTemporaryButtonState, openReportsEmptyTarget, selectTab, splitReportContent } = await import("../../webui/js/reports.js");
 
 function createMockElement({ id = "", tab = "", classes = [] } = {}) {
   const classSet = new Set(classes);
@@ -182,4 +182,23 @@ test("openReportsEmptyTarget clears report hash and activates generator tab", ()
   assert.equal(generatorTab.classList.contains("active"), true);
   assert.equal(generatorPanel.classList.contains("active"), true);
   assert.equal(reportsPanel.classList.contains("active"), false);
+});
+
+test("buildReportMetadataCards returns labeled metadata cards", () => {
+  const cards = buildReportMetadataCards({
+    generated: "2026-Mar-07 14:14 GMT+1",
+    provider: "Gemini - Gemini 2.5 Flash-Lite Preview",
+    totalItems: "100",
+    updatedItems: "62",
+    newComments: "18",
+  });
+
+  assert.match(cards.generatedPart, /report-meta-card-context/);
+  assert.match(cards.generatedPart, /Generated/);
+  assert.match(cards.providerPart, /Model/);
+  assert.match(cards.providerPart, /Gemini 2.5 Flash-Lite Preview/);
+  assert.match(cards.fetchedUpdatedPart, /Activity/);
+  assert.ok(cards.fetchedUpdatedPart.includes('62</strong><span class="meta-sep"')); 
+  assert.match(cards.commentsPart, /Discussion/);
+  assert.ok(cards.commentsPart.includes('18</strong> new comments')); 
 });

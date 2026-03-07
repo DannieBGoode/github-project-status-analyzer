@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1329" height="282" viewBox="0 0 1329 282" role="img" aria-labelledby="title desc">
+  <title id="title">Report metadata redesign preview</title>
+  <desc id="desc">Dark theme preview of the report detail header with redesigned metadata cards.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#03130e"/>
+      <stop offset="100%" stop-color="#071712"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0c1f1a"/>
+      <stop offset="100%" stop-color="#10231d"/>
+    </linearGradient>
+    <linearGradient id="metaA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#132822"/>
+      <stop offset="100%" stop-color="#10221c"/>
+    </linearGradient>
+    <linearGradient id="metaB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#13312e"/>
+      <stop offset="100%" stop-color="#10251f"/>
+    </linearGradient>
+    <linearGradient id="metaC" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#102d24"/>
+      <stop offset="100%" stop-color="#0f221d"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#010504" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <rect width="1329" height="282" fill="url(#bg)"/>
+
+  <g transform="translate(64 20)">
+    <text x="0" y="15" fill="#d9efe3" font-size="24" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Generator</text>
+    <text x="88" y="15" fill="#f2f8f4" font-size="24" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Reports</text>
+    <line x1="88" y1="32" x2="180" y2="32" stroke="#d1e8dc" stroke-width="3"/>
+  </g>
+
+  <g transform="translate(64 68)">
+    <rect x="0" y="0" rx="14" ry="14" width="114" height="36" fill="#142620" stroke="#496357"/>
+    <text x="15" y="24" fill="#f4f8f6" font-size="15" font-family="Segoe UI, Arial, sans-serif" font-weight="700">? All Reports</text>
+  </g>
+
+  <g transform="translate(56 118)" filter="url(#shadow)">
+    <rect x="0" y="0" rx="22" ry="22" width="1128" height="178" fill="url(#card)" stroke="#375046"/>
+
+    <text x="24" y="40" fill="#49d4ff" font-size="18" font-family="Segoe UI, Arial, sans-serif" font-weight="800">Mithril Network ?</text>
+    <text x="24" y="68" fill="#c7d5cf" font-size="13" font-family="Segoe UI, Arial, sans-serif">report-20260307-141418.md</text>
+
+    <g transform="translate(24 92)">
+      <rect x="0" y="0" rx="14" ry="14" width="248" height="60" fill="url(#metaA)" stroke="#426056"/>
+      <text x="18" y="19" fill="#8ea79c" font-size="10" letter-spacing="1.6" font-family="Segoe UI, Arial, sans-serif" font-weight="700">GENERATED</text>
+      <g transform="translate(18 31)">
+        <rect x="0" y="1" width="12" height="11" rx="2" ry="2" fill="none" stroke="#edf6f1" stroke-width="1.4"/>
+        <line x1="3" y1="0" x2="3" y2="4" stroke="#edf6f1" stroke-width="1.4"/>
+        <line x1="9" y1="0" x2="9" y2="4" stroke="#edf6f1" stroke-width="1.4"/>
+        <line x1="1.6" y1="5.4" x2="10.4" y2="5.4" stroke="#edf6f1" stroke-width="1.4"/>
+      </g>
+      <text x="38" y="43" fill="#f3faf6" font-size="15" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Mar 7, 2026 · 2:14 PM</text>
+    </g>
+
+    <g transform="translate(286 92)">
+      <rect x="0" y="0" rx="14" ry="14" width="262" height="60" fill="url(#metaB)" stroke="#4c7f73"/>
+      <text x="18" y="19" fill="#97b3a9" font-size="10" letter-spacing="1.6" font-family="Segoe UI, Arial, sans-serif" font-weight="700">MODEL</text>
+      <g transform="translate(18 31)">
+        <path d="M6 0 7.3 5 12.3 6.2 7.3 7.4 6 12.4 4.7 7.4 0 6.2 4.7 5Z" fill="#edf6f1" opacity="0.95"/>
+      </g>
+      <text x="38" y="43" fill="#f3faf6" font-size="15" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Gemini 2.5 Flash-Lite Preview</text>
+    </g>
+
+    <g transform="translate(562 92)">
+      <rect x="0" y="0" rx="14" ry="14" width="248" height="60" fill="url(#metaC)" stroke="#4b7a67"/>
+      <text x="18" y="19" fill="#92aea2" font-size="10" letter-spacing="1.6" font-family="Segoe UI, Arial, sans-serif" font-weight="700">ACTIVITY</text>
+      <g transform="translate(18 31)" stroke="#edf6f1" stroke-width="1.6" stroke-linecap="round">
+        <line x1="0" y1="2" x2="12" y2="2"/>
+        <line x1="0" y1="6" x2="12" y2="6"/>
+        <line x1="0" y1="10" x2="12" y2="10"/>
+      </g>
+      <text x="38" y="43" fill="#f3faf6" font-size="15" font-family="Segoe UI, Arial, sans-serif"><tspan font-weight="800" font-size="18">62</tspan><tspan fill="#8ea79c"> / </tspan><tspan>100 updates</tspan></text>
+    </g>
+
+    <g transform="translate(824 92)">
+      <rect x="0" y="0" rx="14" ry="14" width="240" height="60" fill="url(#metaC)" stroke="#4b7a67"/>
+      <text x="18" y="19" fill="#92aea2" font-size="10" letter-spacing="1.6" font-family="Segoe UI, Arial, sans-serif" font-weight="700">DISCUSSION</text>
+      <g transform="translate(18 31)" fill="none" stroke="#edf6f1" stroke-width="1.5" stroke-linejoin="round">
+        <path d="M2 1.5h9a1.8 1.8 0 0 1 1.8 1.8v4.2A1.8 1.8 0 0 1 11 9.3H6.7l-2.2 1.7V9.3H2A1.8 1.8 0 0 1 .2 7.5V3.3A1.8 1.8 0 0 1 2 1.5Z"/>
+      </g>
+      <text x="38" y="43" fill="#f3faf6" font-size="15" font-family="Segoe UI, Arial, sans-serif"><tspan font-weight="800" font-size="18" fill="#8be0b5">18</tspan><tspan> new comments</tspan></text>
+    </g>
+
+    <g transform="translate(1010 110)">
+      <rect x="0" y="0" rx="10" ry="10" width="40" height="40" fill="#12251f" stroke="#4b665c"/>
+      <rect x="52" y="0" rx="10" ry="10" width="40" height="40" fill="#0f8558" stroke="#52b889"/>
+      <rect x="14" y="11" width="10" height="12" rx="1" ry="1" fill="none" stroke="#dbece4" stroke-width="1.4"/>
+      <rect x="18" y="7" width="10" height="12" rx="1" ry="1" fill="none" stroke="#dbece4" stroke-width="1.4"/>
+      <path d="M72 12v14m0 0-5-5m5 5 5-5M65 29h14" fill="none" stroke="#ecfbf4" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+</svg>
