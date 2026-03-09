@@ -136,6 +136,11 @@ def index():
     return send_from_directory(WEBUI_DIR, "index.html")
 
 
+@app.get("/welcome")
+def welcome():
+    return send_from_directory(WEBUI_DIR, "landing.html")
+
+
 @app.get("/api/config")
 def get_config():
     settings = load_settings(config)
