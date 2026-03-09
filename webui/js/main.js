@@ -20,6 +20,25 @@ import { byId } from "./utils.js";
 
 let pendingReportId = null;
 
+// Shared AudioContext reused across chimes — avoids creating a new context
+// for every notification, which wastes resources and risks hitting browser limits.
+let _sharedAudioCtx = null;
+
+function getAudioContext() {
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return null;
+  try {
+    if (!_sharedAudioCtx || _sharedAudioCtx.state === "closed") {
+      _sharedAudioCtx = new AudioCtx();
+    }
+    return _sharedAudioCtx;
+  } catch (_err) {
+    return null;
+  }
+}
+
+const STREAM_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
+
 const THEME_STORAGE_KEY = "webui-theme";
 const THEME_ICON_SUN = `
   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -75,9 +94,8 @@ function persistTheme(theme) {
 
 function playSuccessChime() {
   try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
+    const ctx = getAudioContext();
+    if (!ctx) return;
     const now = ctx.currentTime;
     const master = ctx.createGain();
     master.gain.setValueAtTime(0.0001, now);
@@ -102,10 +120,6 @@ function playSuccessChime() {
       osc.start(now + start);
       osc.stop(now + start + dur + 0.02);
     });
-
-    setTimeout(() => {
-      ctx.close().catch(() => {});
-    }, 1200);
   } catch (_err) {
     // Ignore audio failures; report generation remains unaffected.
   }
@@ -113,9 +127,8 @@ function playSuccessChime() {
 
 function playErrorChime() {
   try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
+    const ctx = getAudioContext();
+    if (!ctx) return;
     const now = ctx.currentTime;
     const master = ctx.createGain();
     master.gain.setValueAtTime(0.0001, now);
@@ -140,10 +153,6 @@ function playErrorChime() {
       osc.start(now + start);
       osc.stop(now + start + dur + 0.02);
     });
-
-    setTimeout(() => {
-      ctx.close().catch(() => {});
-    }, 1300);
   } catch (_err) {
     // Ignore audio failures; report generation remains unaffected.
   }
@@ -157,6 +166,12 @@ async function runReport(event) {
   initProgress();
   let hasError = false;
 
+  const controller = new AbortController();
+  const streamTimeoutId = setTimeout(
+    () => controller.abort(),
+    STREAM_TIMEOUT_MS
+  );
+
   try {
     const payload = buildRunPayload();
     pendingReportId = startReport(payload);
@@ -165,6 +180,7 @@ async function runReport(event) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
+      signal: controller.signal,
     });
 
     if (!res.ok) {
@@ -229,10 +245,14 @@ async function runReport(event) {
   } catch (err) {
     hasError = true;
     const failedStep = findInProgressStep() || "ai_wait";
-    updateProgress(failedStep, "failed", "Failed", err.message);
+    const message = err.name === "AbortError"
+      ? "Request timed out after 10 minutes."
+      : err.message;
+    updateProgress(failedStep, "failed", "Failed", message);
     if (pendingReportId) failReport(pendingReportId);
     playErrorChime();
   } finally {
+    clearTimeout(streamTimeoutId);
     stopProgressTimer();
     byId("run-btn").disabled = false;
     if (hasError) {
