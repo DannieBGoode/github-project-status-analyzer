@@ -166,13 +166,13 @@
         </div>
         <div id="reports-detail-view" class="hidden">
           <div class="reports-detail-nav">
-            <button id="reports-back-btn" type="button" class="reports-back-btn secondary">&#8592; All Reports</button>
+            <button id="reports-back-btn" type="button" class="reports-back-btn secondary" aria-label="Back to all reports">&#8592; All Reports</button>
           </div>
           <section id="reports-list" class="reports-list"></section>
         </div>
       </section>
 
-      <section id="tab-settings" class="tab-panel" aria-hidden="true">
+      <section id="tab-settings" class="tab-panel" role="tabpanel" aria-label="Settings" aria-hidden="true">
         <div class="card">
           <h2>API Credentials</h2>
           <p class="block-note">
@@ -182,17 +182,17 @@
           <div class="grid one">
             <label>
               <span>GitHub Token</span>
-              <input id="github_token" type="password" autocomplete="off" />
+              <input id="github_token" type="password" autocomplete="new-password" />
             </label>
           </div>
           <div class="grid two">
             <label>
               <span>Gemini API Key</span>
-              <input id="gemini_api_key" type="password" autocomplete="off" />
+              <input id="gemini_api_key" type="password" autocomplete="new-password" />
             </label>
             <label>
               <span>OpenAI API Key</span>
-              <input id="openai_api_key" type="password" autocomplete="off" />
+              <input id="openai_api_key" type="password" autocomplete="new-password" />
             </label>
           </div>
           <p class="settings-note">

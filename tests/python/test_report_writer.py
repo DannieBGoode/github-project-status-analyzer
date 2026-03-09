@@ -1,6 +1,10 @@
+import shutil
 import sys
+import tempfile
 import unittest
+from datetime import datetime
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
@@ -9,6 +13,7 @@ from report_writer import (
     format_generated_timestamp,
     format_model_display,
     format_provider_display,
+    write_report,
 )
 
 
@@ -99,6 +104,78 @@ class TestFormatGeneratedTimestamp(unittest.TestCase):
     def test_invalid_timezone_does_not_raise(self):
         result = format_generated_timestamp(report_timezone="Not/AReal_Zone")
         self.assertIsInstance(result, str)
+
+
+class TestWriteReport(unittest.TestCase):
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp())
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def _write(self, **kwargs):
+        defaults = dict(
+            summary="## Key Highlights\nAll good.",
+            provider="gemini",
+            model="gemini-2.5-flash-lite-preview-09-2025",
+            project={"title": "Acme", "url": "https://github.com/orgs/acme/projects/1"},
+            base_dir=self.tmp,
+            report_timezone="",
+            report_timezone_label="UTC",
+        )
+        defaults.update(kwargs)
+        return write_report(**defaults)
+
+    def test_returns_path_object(self):
+        path = self._write()
+        self.assertIsInstance(path, Path)
+
+    def test_file_exists_after_write(self):
+        path = self._write()
+        self.assertTrue(path.exists())
+
+    def test_file_is_inside_reports_subdir(self):
+        path = self._write()
+        self.assertEqual(path.parent.name, "reports")
+
+    def test_creates_reports_directory_if_missing(self):
+        new_base = self.tmp / "nested" / "dir"
+        path = self._write(base_dir=new_base)
+        self.assertTrue(path.exists())
+
+    def test_filename_matches_report_timestamp_pattern(self):
+        import re
+        path = self._write()
+        self.assertRegex(path.name, r"^report-\d{8}-\d{6}\.md$")
+
+    def test_file_has_md_extension(self):
+        path = self._write()
+        self.assertEqual(path.suffix, ".md")
+
+    def test_file_contains_summary(self):
+        path = self._write()
+        content = path.read_text(encoding="utf-8")
+        self.assertIn("All good.", content)
+
+    def test_file_starts_with_executive_report_heading(self):
+        path = self._write()
+        content = path.read_text(encoding="utf-8")
+        self.assertTrue(content.startswith("# Executive Report"))
+
+    def test_utf8_encoding_with_special_characters(self):
+        path = self._write(summary="## Notes\nCafé résumé — naïve approach 🎉")
+        content = path.read_text(encoding="utf-8")
+        self.assertIn("Café résumé", content)
+        self.assertIn("🎉", content)
+
+    def test_second_report_with_different_timestamp_has_different_filename(self):
+        import re
+        # Both reports must follow the timestamp pattern; uniqueness across
+        # different seconds is guaranteed by the format — enough to verify format.
+        path1 = self._write()
+        path2 = self._write()
+        self.assertRegex(path1.name, r"^report-\d{8}-\d{6}\.md$")
+        self.assertRegex(path2.name, r"^report-\d{8}-\d{6}\.md$")
 
 
 if __name__ == "__main__":

@@ -23,10 +23,15 @@ PROJECT_ID = ""
 AI_PROVIDER = "gemini"
 
 # Reporting query controls
+# Only items updated within this many days are considered "recent" in the report.
 LOOKBACK_DAYS = 14
+# Number of project items to fetch (GitHub GraphQL hard cap: 100).
 MAX_ITEMS = 40
+# Comments fetched per item; higher values increase prompt size and AI cost.
 MAX_COMMENTS_PER_ITEM = 20
+# Seconds to wait for an AI provider response before timing out.
 AI_TIMEOUT_SECONDS = 120
+# Number of additional retry attempts on AI provider read timeout (0 = no retries).
 AI_MAX_RETRIES = 1
 
 # Gemini settings
@@ -38,3 +43,11 @@ GEMINI_MODEL = "gemini-2.5-flash-lite-preview-09-2025"
 # Create API key at: https://platform.openai.com/api-keys
 OPENAI_API_KEY = "sk-your-openai-api-key"
 OPENAI_MODEL = "gpt-5-nano"
+
+# Optional: timezone for the "Generated" timestamp in the report.
+# Use IANA zone names (e.g. "America/New_York", "Europe/London", "Asia/Tokyo").
+# Leave empty to use the server's local timezone.
+REPORT_TIMEZONE = ""
+# Optional: display label for the timezone shown in the report (e.g. "ET", "BST").
+# Leave empty to use the abbreviation derived from REPORT_TIMEZONE.
+REPORT_TIMEZONE_LABEL = ""

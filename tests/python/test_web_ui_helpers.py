@@ -116,5 +116,100 @@ class TestBuildRuntimeSettings(unittest.TestCase):
         self.assertEqual(result.project_id, "")
 
 
+class TestRedactError(unittest.TestCase):
+    def test_redacts_gemini_query_param(self):
+        exc = Exception("https://example.com?key=AIzaSyABCDEF1234")
+        result = web_ui.redact_error(exc)
+        self.assertNotIn("AIzaSyABCDEF1234", result)
+        self.assertIn("key=***", result)
+
+    def test_redacts_bearer_token(self):
+        exc = Exception("Authorization: Bearer sk-proj-abcdef1234567890")
+        result = web_ui.redact_error(exc)
+        self.assertNotIn("abcdef1234567890", result)
+
+    def test_redacts_github_ghp_token(self):
+        exc = Exception("token ghp_realtoken123456")
+        result = web_ui.redact_error(exc)
+        self.assertNotIn("realtoken123456", result)
+        self.assertIn("ghp_***", result)
+
+    def test_redacts_github_ghu_token(self):
+        exc = Exception("auth ghu_sometoken999")
+        result = web_ui.redact_error(exc)
+        self.assertNotIn("sometoken999", result)
+
+    def test_redacts_openai_sk_token(self):
+        exc = Exception("key=sk-proj-abcd1234xyz")
+        result = web_ui.redact_error(exc)
+        self.assertNotIn("1234xyz", result)
+
+    def test_redacts_x_goog_api_key_header(self):
+        exc = Exception('headers: {"x-goog-api-key": "AIzaSySecret"}')
+        result = web_ui.redact_error(exc)
+        self.assertNotIn("AIzaSySecret", result)
+
+    def test_preserves_non_secret_text(self):
+        exc = Exception("Network connection refused")
+        result = web_ui.redact_error(exc)
+        self.assertEqual(result, "Network connection refused")
+
+
+class TestBuildRuntimeSettingsMasking(unittest.TestCase):
+    def setUp(self):
+        self.base = _make_base_settings()
+
+    def test_masked_gemini_api_key_uses_base(self):
+        payload = {"gemini_api_key": "AIza****abcd"}
+        result = web_ui.build_runtime_settings(payload, self.base)
+        self.assertEqual(result.gemini_api_key, self.base.gemini_api_key)
+
+    def test_new_gemini_api_key_from_payload(self):
+        payload = {"gemini_api_key": "AIzaSyNewKey"}
+        result = web_ui.build_runtime_settings(payload, self.base)
+        self.assertEqual(result.gemini_api_key, "AIzaSyNewKey")
+
+    def test_masked_openai_api_key_uses_base(self):
+        payload = {"openai_api_key": "sk-****abcd"}
+        result = web_ui.build_runtime_settings(payload, self.base)
+        self.assertEqual(result.openai_api_key, self.base.openai_api_key)
+
+    def test_new_openai_api_key_from_payload(self):
+        payload = {"openai_api_key": "sk-proj-newkey"}
+        result = web_ui.build_runtime_settings(payload, self.base)
+        self.assertEqual(result.openai_api_key, "sk-proj-newkey")
+
+
+class TestBuildRuntimeSettingsModelSelection(unittest.TestCase):
+    def setUp(self):
+        self.base = _make_base_settings()
+
+    def test_valid_gemini_model_applied(self):
+        cheapest = web_ui.cheapest_model("gemini")
+        all_ids = web_ui.model_ids("gemini")
+        # pick a known model that exists
+        model = all_ids[0] if all_ids else cheapest
+        payload = {"ai_provider": "gemini", "model": model}
+        result = web_ui.build_runtime_settings(payload, self.base)
+        self.assertEqual(result.gemini_model, model)
+
+    def test_invalid_gemini_model_falls_back_to_cheapest(self):
+        payload = {"ai_provider": "gemini", "model": "nonexistent-model-xyz"}
+        result = web_ui.build_runtime_settings(payload, self.base)
+        self.assertEqual(result.gemini_model, web_ui.cheapest_model("gemini"))
+
+    def test_valid_openai_model_applied(self):
+        all_ids = web_ui.model_ids("openai")
+        model = all_ids[0] if all_ids else web_ui.cheapest_model("openai")
+        payload = {"ai_provider": "openai", "model": model}
+        result = web_ui.build_runtime_settings(payload, self.base)
+        self.assertEqual(result.openai_model, model)
+
+    def test_no_model_in_payload_uses_cheapest(self):
+        payload = {"ai_provider": "gemini"}
+        result = web_ui.build_runtime_settings(payload, self.base)
+        self.assertEqual(result.gemini_model, web_ui.cheapest_model("gemini"))
+
+
 if __name__ == "__main__":
     unittest.main()
