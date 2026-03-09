@@ -35,7 +35,21 @@ def redact_error(exc):
     msg = re.sub(r'([?&]key=)[^&\s\'"]+', r'\1***', msg)
     # Redact Bearer / token header values that may appear in repr
     msg = re.sub(r'(Bearer\s+)[A-Za-z0-9\-._~+/]+=*', r'\1***', msg)
+    # Redact GitHub tokens (ghp_, ghu_, ghs_, github_pat_)
+    msg = re.sub(r'\b(gh[pusr]_|github_pat_)[A-Za-z0-9_]+', r'\1***', msg)
+    # Redact OpenAI sk- tokens
+    msg = re.sub(r'\b(sk-[A-Za-z0-9]{4})[A-Za-z0-9\-_]+', r'\1***', msg)
+    # Redact x-goog-api-key header values
+    msg = re.sub(r'(x-goog-api-key["\s:]+)[A-Za-z0-9\-._]+', r'\1***', msg)
     return msg
+
+
+@app.after_request
+def add_security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    return response
 
 
 def mask_secret(value):
