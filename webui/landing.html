@@ -489,7 +489,7 @@
     <form
       class="waitlist-form animate animate-delay-2"
       id="waitlist-form"
-      onsubmit="handleWaitlist(event)"
+      onsubmit="event.preventDefault();this.style.display='none';document.getElementById('waitlist-thankyou').style.display='flex'"
       aria-label="Join the PulseReport waitlist"
     >
       <label for="waitlist-email" class="visually-hidden">Work email address</label>
@@ -537,6 +537,5 @@
   </div>
 </footer>
 
-<script src="/js/landing.js" defer></script>
 </body>
 </html>
